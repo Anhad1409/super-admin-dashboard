@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="color-scheme: light; supported-color-schemes: light;">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <title>Your VoiceBrew sign-in code</title>
+  <!--
+    VoiceBrew · transactional email · 2FA / OTP code
+    Merge tags: {{USER_NAME}} {{OTP_CODE}} {{EXPIRY_MINUTES}} {{REQUEST_TIME}} {{REQUEST_CITY}} {{APP_URL}} {{SUPPORT_EMAIL}}
+    Suggested subject:  {{OTP_CODE}} is your VoiceBrew sign-in code
+    Email-safe: tables + inline styles only · no webfonts (Georgia/Courier fallbacks) · works with images off
+  -->
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style type="text/css">
+    /* Clients that honor <style>: mobile niceties. Everything critical is inline. */
+    html, body { margin: 0 !important; padding: 0 !important; }
+    @media only screen and (max-width: 640px) {
+      .vb-card { width: 94% !important; }
+      .vb-pad  { padding-left: 22px !important; padding-right: 22px !important; }
+      .vb-code { font-size: 32px !important; letter-spacing: 8px !important; }
+    }
+    a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#fdf8f0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
+  <!-- preheader (hidden) -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#fdf8f0;">
+    {{OTP_CODE}} is your code — it expires in {{EXPIRY_MINUTES}} minutes. We never ask for it on a call.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fdf8f0;">
+    <tr>
+      <td align="center" style="padding:36px 12px 28px;">
+
+        <!-- ===== the card ===== -->
+        <table role="presentation" class="vb-card" width="600" cellpadding="0" cellspacing="0" border="0"
+          style="width:600px; max-width:600px; background-color:#fffdf9; border:1px solid #f1e2c8; border-radius:20px; overflow:hidden;">
+
+          <!-- gradient hairline (brand: caramel → mango → steam) -->
+          <tr>
+            <td height="4" style="height:4px; line-height:4px; font-size:0; background:#b8763d; background-image:linear-gradient(90deg,#b8763d,#e8a33d 50%,#4fb0a5);">&nbsp;</td>
+          </tr>
+
+          <!-- lockup -->
+          <tr>
+            <td align="center" style="padding:30px 40px 6px;">
+              <div style="font-family:Georgia,'Times New Roman',serif; font-size:26px; line-height:1; color:#3d2817; font-weight:bold;">
+                Voice<span style="color:#b8763d;">Brew</span>
+              </div>
+              <div style="font-family:'Courier New',Courier,monospace; font-size:10px; letter-spacing:4px; color:#c9a87c; padding-top:7px;">
+                BY&nbsp;BLOSTEM
+              </div>
+            </td>
+          </tr>
+
+          <!-- headline + body -->
+          <tr>
+            <td class="vb-pad" style="padding:22px 48px 0;">
+              <h1 style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:24px; line-height:1.3; color:#2a1a0f; font-weight:bold; text-align:center;">
+                Your sign-in code
+              </h1>
+              <p style="margin:12px 0 0; font-family:Helvetica,Arial,sans-serif; font-size:14px; line-height:1.6; color:#6b4423; text-align:center;">
+                Namaste {{USER_NAME}} — use this code to finish signing in to VoiceBrew.
+                It expires in <strong style="color:#3d2817;">{{EXPIRY_MINUTES}} minutes</strong>.
+              </p>
+            </td>
+          </tr>
+
+          <!-- the code -->
+          <tr>
+            <td align="center" style="padding:24px 48px 8px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td align="center" style="background-color:#f4e9d8; border:2px dashed #d8bf9a; border-radius:16px; padding:22px 16px;">
+                    <div class="vb-code" style="font-family:'Courier New',Courier,monospace; font-size:40px; line-height:1; letter-spacing:12px; color:#2a1a0f; font-weight:bold; text-indent:12px;">
+                      {{OTP_CODE}}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:10px 0 0; font-family:'Courier New',Courier,monospace; font-size:10px; letter-spacing:2px; color:#c9a87c;">
+                REQUESTED {{REQUEST_TIME}} · {{REQUEST_CITY}}
+              </p>
+            </td>
+          </tr>
+
+          <!-- security note (the house rule) -->
+          <tr>
+            <td class="vb-pad" style="padding:18px 48px 0;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="background-color:#eef7f5; border:1px solid #bfe0db; border-radius:14px; padding:14px 18px;">
+                    <p style="margin:0; font-family:Helvetica,Arial,sans-serif; font-size:12.5px; line-height:1.6; color:#2f6b64;">
+                      <strong>☕ House rule:</strong> VoiceBrew will <strong>never</strong> call, WhatsApp, or SMS you asking for this code —
+                      not even our own voice agents. Enter it only at <a href="{{APP_URL}}" style="color:#2f6b64; font-weight:bold;">{{APP_URL}}</a>.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- didn't request -->
+          <tr>
+            <td class="vb-pad" style="padding:18px 48px 30px;">
+              <p style="margin:0; font-family:Helvetica,Arial,sans-serif; font-size:12.5px; line-height:1.6; color:#a3906e; text-align:center;">
+                Didn&rsquo;t try to sign in? You can safely ignore this email — the code is useless without your password.
+                If this keeps happening, write to <a href="mailto:{{SUPPORT_EMAIL}}" style="color:#b8763d; font-weight:bold;">{{SUPPORT_EMAIL}}</a>.
+              </p>
+            </td>
+          </tr>
+        </table>
+
+        <!-- footer -->
+        <table role="presentation" class="vb-card" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px;">
+          <tr>
+            <td align="center" style="padding:20px 24px 0;">
+              <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:10px; letter-spacing:2px; color:#c9a87c; text-transform:uppercase;">
+                brewed with care · VoiceBrew by Blostem
+              </p>
+              <p style="margin:6px 0 0; font-family:Helvetica,Arial,sans-serif; font-size:11px; line-height:1.6; color:#c9a87c;">
+                estd. 2025 · Delhi NCR, India<br />
+                This is a security email for your VoiceBrew account — it can&rsquo;t be unsubscribed from.
+              </p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

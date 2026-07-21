@@ -1,0 +1,17 @@
+VoiceBrew — your sign-in code
+
+Namaste {{USER_NAME}},
+
+Your code: {{OTP_CODE}}
+
+It expires in {{EXPIRY_MINUTES}} minutes.
+Requested {{REQUEST_TIME}} · {{REQUEST_CITY}}
+
+HOUSE RULE: VoiceBrew will never call, WhatsApp, or SMS you asking
+for this code — not even our own voice agents. Enter it only at
+{{APP_URL}}.
+
+Didn't try to sign in? Ignore this email — the code is useless
+without your password. If it keeps happening: {{SUPPORT_EMAIL}}
+
+brewed with care · VoiceBrew by Blostem · estd. 2025, Delhi NCR
