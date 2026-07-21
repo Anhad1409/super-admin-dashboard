@@ -1,33 +1,45 @@
-# Blostem Voice Agent — local UI/UX clone
+# VoiceBrew — Super Admin Dashboard
 
-An experimental local rebuild of `vox.blostem.info` for UI/UX iteration.
-Stack mirrors the original: **Next.js 16 (App Router) + Tailwind v4 + shadcn/ui (Base UI)**.
+The internal control-plane build of VoiceBrew: the full client product **plus**
+a super-admin "Control Plane" for Blostem's own team to see every client in one
+view. A topbar toggle flips between the two modes; the sidebar swaps to the
+super-admin nav under `/admin/*`.
 
-## Run
+> This is a separate deploy from the client-facing product. Data is mock and
+> deterministic — nothing here calls a real backend.
+
+## Modes
+
+- **Client app** — the tenant product (`/dashboard`, `/calls`, `/campaigns`, …).
+- **Control Plane** (`/admin/*`) — super-admin God-view:
+  Overview · Clients · Revenue · Usage · Compliance · Feature Flags ·
+  System Health · Audit Log · Staff · Support, plus per-client drill-down with
+  "View as client" impersonation.
+
+Switch with the **CLIENT ⇄ CONTROL PLANE** toggle in the topbar.
+
+## Run locally
 
 ```bash
-npm run dev        # http://localhost:3000  (we used PORT 3434 during setup)
+npm install
+npm run dev      # http://localhost:3000
+# or a production build:
+npm run build && npm run start
 ```
 
-## What's here
+Control plane lands at `/admin/clients`.
 
-- **Theme** — `src/app/globals.css` holds the extracted cream/bronze design tokens
-  (also mirrored in `../theme.css`). Fonts: Inter / Poppins / Playfair Display via `next/font`.
-- **Shell** — glassy icon sidebar (`src/components/layout/sidebar.tsx`) + top bar with
-  wallet pill, org switcher, user chip (`topbar.tsx`).
-- **Mock data** — `src/data/*.json` are real GET responses captured from the demo org;
-  `src/lib/data.ts` exposes them as typed accessors. Swap for `fetch()` to go live.
-- **Built pages** — `/dashboard`, `/campaigns` (tabbed), `/calls`, `/analytics` (+ SVG
-  chart), `/leads`.
-- **Stubbed pages** — the other ~15 routes render a placeholder via
-  `src/components/ui-bits/coming-soon.tsx` so navigation is complete.
+## Deploy (Vercel)
 
-## Reusable bits
+Zero config — it's a standard Next.js app.
 
-`src/components/ui-bits/`: `StatCard`, `StatusBadge`, `PageHeader`, `AreaChart`, `ComingSoon`.
+1. Push this repo to GitHub.
+2. In the Vercel dashboard: **New Project → import this repo → Deploy**
+   (framework auto-detected as Next.js; no env vars needed).
 
-## Notes
+## Data
 
-- shadcn here uses the **Base UI** primitive (`@base-ui/react`), so triggers use the
-  `render={<.../>}` prop, **not** Radix's `asChild`.
-- Seed data is demo/test data (no real PII).
+- `src/lib/clients-mock.ts` — the client roster + platform aggregates.
+- `src/lib/admin-mock.ts` — staff, providers, incidents, audit, tickets, invoices.
+
+Every control-plane screen reconciles from these two files.
