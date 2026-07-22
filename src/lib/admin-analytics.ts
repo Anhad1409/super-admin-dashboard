@@ -3,7 +3,7 @@
 // alerts. Deterministic; everything derives from the clients roster so the
 // new screens reconcile with Overview / Revenue / Usage.
 
-import { clients, platform, churnRiskOf, type Client } from "./clients-mock";
+import { clients, platform, churnRiskOf, PLAN_META, type Client } from "./clients-mock";
 
 // ---------- seeded rng (mulberry32) ----------
 const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -186,4 +186,140 @@ export const alertCounts = {
   critical: alerts.filter((a) => a.severity === "critical").length,
   warning: alerts.filter((a) => a.severity === "warning").length,
   info: alerts.filter((a) => a.severity === "info").length,
+};
+
+// ================= ENGAGEMENT / RISK / QUALITY (Overview KPIs) =================
+const WEEK_AGO = "2026-07-15";
+export const engagement = {
+  weeklyActive: clients.filter((c) => c.status !== "churned" && c.lastActive >= WEEK_AGO).length,
+  paying: platform.active,
+  get activePct() { return Math.round((this.weeklyActive / clients.filter((c) => c.status !== "churned").length) * 100); },
+  timeToValue: "3.2 days",
+  trialToPaid: funnelStats.trialToPaid,
+};
+
+// feature-adoption breadth — how many product areas each org uses (deterministic)
+const AREAS = ["Campaigns", "KYC flows", "Handoff", "Analytics", "Integrations", "Learning Lab"];
+export function adoptionFor(c: Client): string[] {
+  const r = rng(hash(c.id + "adopt"));
+  const n = c.status === "churned" ? 0 : Math.max(2, Math.min(AREAS.length, 2 + Math.floor(r() * 5)));
+  return AREAS.slice(0, n);
+}
+export const adoption = {
+  avgBreadth: (clients.filter((c) => c.status !== "churned").reduce((s, c) => s + adoptionFor(c).length, 0) / clients.filter((c) => c.status !== "churned").length).toFixed(1),
+  byArea: AREAS.map((a) => ({ area: a, count: clients.filter((c) => c.status !== "churned" && adoptionFor(c).includes(a)).length })),
+};
+
+// revenue quality
+const byMrr = [...clients].sort((a, b) => b.mrr - a.mrr);
+export const revenueQuality = {
+  concentrationTop2: Math.round(((byMrr[0].mrr + byMrr[1].mrr) / platform.mrr) * 100),
+  concentrationTop2Clients: [byMrr[0], byMrr[1]],
+  mrrAtRisk: clients.filter((c) => churnRiskOf(c) === "high" && c.status !== "churned").reduce((s, c) => s + c.mrr, 0),
+  atRiskClients: clients.filter((c) => churnRiskOf(c) === "high" && c.status !== "churned"),
+  arpa: Math.round(platform.mrr / platform.active),
+  goalConversion: Math.round(clients.filter((c) => c.status !== "churned" && c.successPct > 0).reduce((s, c) => s + c.successPct, 0) / clients.filter((c) => c.status !== "churned" && c.successPct > 0).length),
+};
+
+// ================= PER-ORG GOALS (bifurcated by use case) =================
+export type GoalType = "collections" | "kyc" | "leadgen" | "onboarding";
+export const GOAL_META: Record<GoalType, { label: string; metric: string; tint: string }> = {
+  collections: { label: "Collections", metric: "Recovery rate", tint: "var(--color-caramel)" },
+  kyc:         { label: "KYC / verification", metric: "Verification completion", tint: "var(--color-steam)" },
+  leadgen:     { label: "Lead generation", metric: "Qualified-lead rate", tint: "var(--color-mango)" },
+  onboarding:  { label: "Onboarding", metric: "Activation completion", tint: "var(--color-blueberry)" },
+};
+const GOAL_OF: Record<string, GoalType> = {
+  "suryoday-small-finance-bank": "kyc", "niyo-finance": "kyc", "kaleidofin": "collections",
+  "paysprint": "onboarding", "moneybuddha": "leadgen", "lendkart-finance": "collections",
+  "dhansetu-capital": "collections", "fintechglow-capital": "leadgen", "rupeecircle": "leadgen",
+  "shubhloans": "leadgen", "credright-nbfc": "collections", "arthmandi": "collections",
+  "vaibhav-microfinance": "collections", "blostem-demo-organization": "kyc",
+};
+export const goalTypeOf = (id: string): GoalType => GOAL_OF[id] ?? "collections";
+
+export type OrgGoal = { client: Client; type: GoalType; metric: string; target: number; actual: number; attainment: number; callTarget: number; callActual: number };
+export const orgGoals: OrgGoal[] = clients
+  .filter((c) => c.status !== "churned")
+  .map((c) => {
+    const type = goalTypeOf(c.id);
+    const target = type === "kyc" ? 80 : type === "collections" ? 45 : type === "leadgen" ? 30 : 70;
+    const actual = Math.max(8, Math.min(99, Math.round(c.successPct * (type === "collections" ? 1.6 : type === "leadgen" ? 1.1 : type === "kyc" ? 2.4 : 2.5))));
+    return {
+      client: c, type, metric: GOAL_META[type].metric, target, actual,
+      attainment: Math.round((actual / target) * 100),
+      callTarget: Math.round(c.callsMonth * 1.15 / 1000) * 1000,
+      callActual: c.callsMonth,
+    };
+  })
+  .sort((a, b) => a.attainment - b.attainment);
+export const goalsFor = (id: string) => orgGoals.find((g) => g.client.id === id);
+export const goalRollup = {
+  onTrack: orgGoals.filter((g) => g.attainment >= 100).length,
+  atRisk: orgGoals.filter((g) => g.attainment < 85).length,
+  avgAttainment: Math.round(orgGoals.reduce((s, g) => s + g.attainment, 0) / orgGoals.length),
+  byType: (Object.keys(GOAL_META) as GoalType[]).map((t) => {
+    const inType = orgGoals.filter((g) => g.type === t);
+    return { type: t, count: inType.length, avgAttainment: inType.length ? Math.round(inType.reduce((s, g) => s + g.attainment, 0) / inType.length) : 0 };
+  }).filter((x) => x.count > 0),
+};
+
+// ================= SEGMENTS =================
+export type Segment = { key: string; label: string; count: number; mrr: number; avgConnect: number; avgHealth: number; calls: number; tint: string };
+function seg(key: string, label: string, tint: string, members: Client[]): Segment {
+  const live = members.filter((c) => c.status !== "churned");
+  return {
+    key, label, tint, count: members.length,
+    mrr: members.reduce((s, c) => s + c.mrr, 0),
+    calls: members.reduce((s, c) => s + c.callsMonth, 0),
+    avgConnect: live.length ? Math.round(live.reduce((s, c) => s + c.connectPct, 0) / live.length) : 0,
+    avgHealth: live.length ? Math.round(live.reduce((s, c) => s + c.health, 0) / live.length) : 0,
+  };
+}
+export const segmentsByUseCase: Segment[] = (Object.keys(GOAL_META) as GoalType[]).map((t) =>
+  seg(t, GOAL_META[t].label, GOAL_META[t].tint, clients.filter((c) => c.status !== "churned" && goalTypeOf(c.id) === t))
+).filter((s) => s.count > 0);
+export const segmentsByPlan: Segment[] = (["enterprise", "scale", "growth", "starter"] as const).map((p) =>
+  seg(p, p[0].toUpperCase() + p.slice(1), PLAN_META[p].tint, clients.filter((c) => c.status !== "churned" && c.plan === p))
+).filter((s) => s.count > 0);
+
+// ================= FORECASTING =================
+export const forecast = {
+  mrr: [
+    { m: "Jul", v: platform.mrr, actual: true },
+    { m: "Aug", v: Math.round(platform.mrr * 1.06), actual: false },
+    { m: "Sep", v: Math.round(platform.mrr * 1.12), actual: false },
+    { m: "Oct", v: Math.round(platform.mrr * 1.19), actual: false },
+  ],
+  atRiskMrr: clients.filter((c) => churnRiskOf(c) === "high" && c.status !== "churned").reduce((s, c) => s + c.mrr, 0),
+};
+export type Runway = { client: Client; days: number; burnPerDay: number };
+export const runways: Runway[] = clients
+  .filter((c) => c.status === "active" && c.minutesMonth > 0 && c.walletBalance >= 0)
+  .map((c) => {
+    const burnPerDay = Math.max(1, Math.round((c.minutesMonth / 30) * 8));
+    return { client: c, burnPerDay, days: Math.round(c.walletBalance / burnPerDay) };
+  })
+  .sort((a, b) => a.days - b.days);
+export const runningDry = runways.filter((r) => r.days < 30);
+
+// ================= BENCHMARKS (percentiles) =================
+const live = clients.filter((c) => c.status !== "churned");
+function percentile(values: number[], v: number) {
+  const below = values.filter((x) => x < v).length;
+  return Math.round((below / values.length) * 100);
+}
+export type BenchRow = { client: Client; connect: number; success: number; health: number; margin: number };
+const marginPctOf = (id: string) => economics.find((e) => e.client.id === id)?.marginPct ?? 0;
+export const benchmarks: BenchRow[] = live.map((c) => ({
+  client: c,
+  connect: percentile(live.map((x) => x.connectPct), c.connectPct),
+  success: percentile(live.map((x) => x.successPct), c.successPct),
+  health: percentile(live.map((x) => x.health), c.health),
+  margin: percentile(live.map((x) => marginPctOf(x.id)), marginPctOf(c.id)),
+})).sort((a, b) => (b.connect + b.success + b.health + b.margin) - (a.connect + a.success + a.health + a.margin));
+export const benchMedians = {
+  connect: Math.round(live.reduce((s, c) => s + c.connectPct, 0) / live.length),
+  success: Math.round(live.reduce((s, c) => s + c.successPct, 0) / live.length),
+  health: Math.round(live.reduce((s, c) => s + c.health, 0) / live.length),
 };

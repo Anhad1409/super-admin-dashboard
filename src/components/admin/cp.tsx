@@ -4,8 +4,9 @@
    governance/team/system screen uses, so they read as one system. */
 
 import type { LucideIcon } from "lucide-react";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMetric, type MetricDetail } from "@/components/admin/metric";
 
 export const mono = "font-[family-name:var(--font-data)]";
 export const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
@@ -32,20 +33,31 @@ export function CpHeader({ title, subtitle, right }: { title: string; subtitle: 
   );
 }
 
-/** A KPI stat tile with a tinted top border. */
-export function StatTile({ icon: Icon, label, value, sub, tint, delta }: {
-  icon: LucideIcon; label: string; value: React.ReactNode; sub?: string; tint: string; delta?: string | null;
+/** A KPI stat tile with a tinted top border. Pass `detail` to make it
+    clickable — it opens the shared metric drill-down drawer. */
+export function StatTile({ icon: Icon, label, value, sub, tint, delta, detail }: {
+  icon: LucideIcon; label: string; value: React.ReactNode; sub?: string; tint: string; delta?: string | null; detail?: MetricDetail;
 }) {
+  const m = useMetric();
+  const clickable = !!(detail && m);
   return (
-    <div className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass" style={{ borderTop: `3px solid color-mix(in srgb, ${tint} 60%, transparent)` }}>
+    <button
+      type="button"
+      disabled={!clickable}
+      onClick={() => detail && m?.open(detail)}
+      className={cn("group relative w-full rounded-2xl border border-foam bg-porcelain p-5 text-left shadow-glass transition-all",
+        clickable && "cursor-pointer hover:-translate-y-0.5 hover:border-caramel hover:shadow-glass-hover")}
+      style={{ borderTop: `3px solid color-mix(in srgb, ${tint} 60%, transparent)` }}
+    >
       <div className="flex items-center justify-between">
         <span className="grid size-8 place-items-center rounded-xl" style={{ background: `color-mix(in srgb, ${tint} 16%, #fffdf9)`, color: `color-mix(in srgb, ${tint} 78%, #2a1a0f)` }}><Icon className="size-4" /></span>
-        {delta && <span className="text-[11px] font-semibold text-success">{delta}</span>}
+        {delta ? <span className="text-[11px] font-semibold text-success">{delta}</span> : clickable && <Maximize2 className="size-3.5 text-latte opacity-0 transition-opacity group-hover:opacity-100" />}
       </div>
       <div className="mt-3 font-serif text-[24px] font-semibold leading-none text-coffee tabular-nums">{value}</div>
       <div className={cn(monoLabel, "mt-2")}>{label}</div>
       {sub && <div className="mt-1 text-[11px] text-muted-foreground">{sub}</div>}
-    </div>
+      {clickable && <span className="pointer-events-none absolute bottom-2.5 right-3 font-[family-name:var(--font-data)] text-[9px] uppercase tracking-wide text-latte opacity-0 transition-opacity group-hover:opacity-100">details →</span>}
+    </button>
   );
 }
 

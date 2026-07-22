@@ -4,7 +4,7 @@ import {
   FileText, ListOrdered, Workflow, Headset, Plug, ShieldCheck, Brain,
   FlaskConical, Bot, Mic, ScrollText, Settings, Wallet, Crown, Sun, Coffee, ShieldAlert,
   Building2, IndianRupee, Gauge, SlidersHorizontal, ServerCog, History, LifeBuoy, UsersRound,
-  Percent, Repeat, Filter, MapPin, Bell,
+  Percent, Repeat, Filter, MapPin, Bell, Target, Layers, LineChart, BarChart2,
 } from "lucide-react";
 
 export type NavItem = { label: string; href: string; icon: LucideIcon; group: string };
@@ -62,7 +62,11 @@ export const adminNav: NavItem[] = [
   { label: "Unit Economics", href: "/admin/margins", icon: Percent, group: "cp" },
 
   { label: "Growth & Retention", href: "/admin/growth", icon: Repeat, group: "growth" },
+  { label: "Goals", href: "/admin/goals", icon: Target, group: "growth" },
   { label: "Activation Funnel", href: "/admin/funnel", icon: Filter, group: "growth" },
+  { label: "Segments", href: "/admin/segments", icon: Layers, group: "growth" },
+  { label: "Forecast", href: "/admin/forecast", icon: LineChart, group: "growth" },
+  { label: "Benchmarks", href: "/admin/benchmarks", icon: BarChart2, group: "growth" },
   { label: "Campaigns", href: "/admin/campaigns", icon: Megaphone, group: "growth" },
   { label: "Geography", href: "/admin/geography", icon: MapPin, group: "growth" },
 

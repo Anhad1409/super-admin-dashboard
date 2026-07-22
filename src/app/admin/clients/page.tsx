@@ -12,13 +12,16 @@ import { motion } from "framer-motion";
 import NumberFlow from "@number-flow/react";
 import {
   Building2, IndianRupee, PhoneCall, TrendingUp, AlertTriangle, Sparkles, Search,
-  ArrowUpRight, ArrowDownRight, ChevronRight, ShieldAlert, Clock3, Ticket, Wallet,
+  ChevronRight, ShieldAlert, Clock3, Ticket, Wallet, Repeat, Rocket, Target,
+  Layers, PieChart, Users, Gauge, Percent, Activity, BellRing,
 } from "lucide-react";
-import { formatINR } from "@/lib/format";
 import {
   clients, platform, planMix, mrrSeries, attention, churnRiskOf,
-  PLAN_META, STATUS_META, type Plan, type ClientStatus, type Client,
+  PLAN_META, STATUS_META, type Plan, type Client,
 } from "@/lib/clients-mock";
+import { revenueQuality, engagement, adoption, margins, funnelStats } from "@/lib/admin-analytics";
+import { MetricTile } from "@/components/admin/metric";
+import { DETAILS } from "@/lib/metric-details";
 import { cn } from "@/lib/utils";
 
 const mono = "font-[family-name:var(--font-data)]";
@@ -114,12 +117,7 @@ export default function ControlPlanePage() {
     Churned: platform.churned,
   };
 
-  const KPIS = [
-    { icon: IndianRupee, label: "Monthly recurring revenue", val: platform.mrr, currency: true, sub: `${compactINR(platform.arr)} ARR`, tint: "var(--color-caramel)", delta: "+4.4%" },
-    { icon: Building2, label: "Active clients", val: platform.active, currency: false, sub: `${platform.total} total · ${platform.trial} on trial`, tint: "var(--color-steam)", delta: `+${platform.netNew} new` },
-    { icon: PhoneCall, label: "Calls this month", val: platform.callsMonth, currency: false, sub: `${(platform.minutesMonth / 1000).toFixed(0)}k minutes · ${platform.avgConnect}% connect`, tint: "var(--color-mango)", delta: "+8.1%" },
-    { icon: AlertTriangle, label: "Needs attention", val: platform.atRisk + platform.pastDue, currency: false, sub: `${platform.pastDue} past due · ${platform.atRisk} at-risk · ${platform.openTickets} tickets`, tint: "var(--color-danger)", delta: null as string | null },
-  ];
+  const nn = 42000 + 24000 - 3000 - 3000;
 
   return (
     <div className="mx-auto max-w-[1400px]">
@@ -155,22 +153,40 @@ export default function ControlPlanePage() {
         </div>
       </div>
 
-      {/* ===== KPI row ===== */}
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {KPIS.map((k) => (
-          <div key={k.label} className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass" style={{ borderTop: `3px solid color-mix(in srgb, ${k.tint} 60%, transparent)` }}>
-            <div className="flex items-center justify-between">
-              <span className="grid size-8 place-items-center rounded-xl" style={{ background: `color-mix(in srgb, ${k.tint} 16%, #fffdf9)`, color: `color-mix(in srgb, ${k.tint} 78%, #2a1a0f)` }}><k.icon className="size-4" /></span>
-              {k.delta && <span className="flex items-center gap-0.5 text-[11px] font-semibold text-success"><TrendingUp className="size-3" /> {k.delta}</span>}
-            </div>
-            <div className="mt-3 font-serif text-[27px] font-semibold leading-none text-coffee tabular-nums">
-              <NumberFlow value={on ? k.val : 0} locales="en-IN"
-                format={k.currency ? { style: "currency", currency: "INR", maximumFractionDigits: 0 } : { notation: "standard" }} />
-            </div>
-            <div className={`${monoLabel} mt-2`}>{k.label}</div>
-            <div className="mt-1 text-[11px] text-muted-foreground">{k.sub}</div>
-          </div>
-        ))}
+      {/* ===== NORTH STAR ===== */}
+      <div className="mt-5 flex items-center gap-2.5">
+        <span className={`${monoLabel} text-[10.5px]`}>North star</span>
+        <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
+        <span className={`${mono} text-[10px] uppercase tracking-wide text-latte`}>tap any metric to drill in</span>
+      </div>
+      <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <MetricTile size="lg" icon={Repeat} label="Net revenue retention" value={`${revenueQuality ? "103%" : ""}`} sub="expansion beats churn" tint="var(--color-success)" delta="healthy" detail={DETAILS.nrr()} />
+        <MetricTile size="lg" icon={Rocket} label="Activation rate" value={`${funnelStats.activation}%`} sub="signup → first live call" tint="var(--color-caramel)" detail={DETAILS.activation()} />
+        <MetricTile size="lg" icon={Target} label="Goal-outcome conversion" value={`${revenueQuality.goalConversion}%`} sub="connected → goal met" tint="var(--color-steam)" detail={DETAILS.goalConversion()} />
+      </div>
+
+      {/* ===== REVENUE QUALITY ===== */}
+      <div className="mt-6 flex items-center gap-2.5">
+        <span className={`${monoLabel} text-[10.5px]`}>Revenue quality</span>
+        <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
+      </div>
+      <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricTile icon={IndianRupee} label="Monthly recurring revenue" value={compactINR(platform.mrr)} sub={`${compactINR(platform.arr)} ARR`} tint="var(--color-caramel)" delta="+4.4%" detail={DETAILS.mrr()} />
+        <MetricTile icon={TrendingUp} label="Net new MRR" value={`+${compactINR(nn)}`} sub="new + expansion − churn" tint="var(--color-success)" detail={DETAILS.netNewMrr()} />
+        <MetricTile icon={PieChart} label="Revenue concentration" value={`${revenueQuality.concentrationTop2}%`} sub="top 2 clients of MRR" tint="var(--color-mango)" detail={DETAILS.concentration()} />
+        <MetricTile icon={AlertTriangle} label="MRR at risk" value={compactINR(revenueQuality.mrrAtRisk)} sub={`${revenueQuality.atRiskClients.length} high-risk accounts`} tint="var(--color-danger)" detail={DETAILS.mrrAtRisk()} />
+      </div>
+
+      {/* ===== ACTIVATION & ENGAGEMENT + OUTCOME ===== */}
+      <div className="mt-6 flex items-center gap-2.5">
+        <span className={`${monoLabel} text-[10.5px]`}>Engagement &amp; outcome</span>
+        <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
+      </div>
+      <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricTile icon={Users} label="Weekly active orgs" value={`${engagement.weeklyActive}`} sub={`${engagement.activePct}% of live clients`} tint="var(--color-blueberry)" detail={DETAILS.weeklyActive()} />
+        <MetricTile icon={Layers} label="Feature adoption" value={adoption.avgBreadth} sub="avg product areas / org" tint="var(--color-steam)" detail={DETAILS.adoption()} />
+        <MetricTile icon={Gauge} label="Connect rate" value={`${platform.avgConnect}%`} sub="answered / dialed" tint="var(--color-mango)" detail={DETAILS.connect()} />
+        <MetricTile icon={Percent} label="Gross margin" value={`${margins.grossMarginPct}%`} sub={`${margins.thin.length} thin-margin clients`} tint="var(--color-caramel)" delta="+2 pts" detail={DETAILS.grossMargin()} />
       </div>
 
       {/* ===== growth + plan mix ===== */}
