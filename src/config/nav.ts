@@ -4,6 +4,7 @@ import {
   FileText, ListOrdered, Workflow, Headset, Plug, ShieldCheck, Brain,
   FlaskConical, Bot, Mic, ScrollText, Settings, Wallet, Crown, Sun, Coffee, ShieldAlert,
   Building2, IndianRupee, Gauge, SlidersHorizontal, ServerCog, History, LifeBuoy, UsersRound,
+  Percent, Repeat, Filter, MapPin, Bell,
 } from "lucide-react";
 
 export type NavItem = { label: string; href: string; icon: LucideIcon; group: string };
@@ -48,6 +49,7 @@ export const nav: NavItem[] = [
 // ---- Super-Admin control plane: the sidebar swaps to this under /admin ----
 export const adminNavGroups: { key: string; label: string }[] = [
   { key: "cp", label: "Control Plane" },
+  { key: "growth", label: "Growth" },
   { key: "governance", label: "Governance" },
   { key: "team", label: "Team" },
 ];
@@ -57,8 +59,15 @@ export const adminNav: NavItem[] = [
   { label: "Clients", href: "/admin/clients/list", icon: Building2, group: "cp" },
   { label: "Revenue", href: "/admin/revenue", icon: IndianRupee, group: "cp" },
   { label: "Usage", href: "/admin/usage", icon: Gauge, group: "cp" },
+  { label: "Unit Economics", href: "/admin/margins", icon: Percent, group: "cp" },
+
+  { label: "Growth & Retention", href: "/admin/growth", icon: Repeat, group: "growth" },
+  { label: "Activation Funnel", href: "/admin/funnel", icon: Filter, group: "growth" },
+  { label: "Campaigns", href: "/admin/campaigns", icon: Megaphone, group: "growth" },
+  { label: "Geography", href: "/admin/geography", icon: MapPin, group: "growth" },
 
   { label: "Compliance", href: "/admin/compliance", icon: ShieldCheck, group: "governance" },
+  { label: "Alerts", href: "/admin/alerts", icon: Bell, group: "governance" },
   { label: "Feature Flags", href: "/admin/features", icon: SlidersHorizontal, group: "governance" },
   { label: "System Health", href: "/admin/system", icon: ServerCog, group: "governance" },
   { label: "Audit Log", href: "/admin/audit", icon: History, group: "governance" },
