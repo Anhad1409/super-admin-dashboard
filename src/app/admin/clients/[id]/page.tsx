@@ -11,12 +11,13 @@ import {
   ChevronLeft, PhoneCall, Users, TrendingUp, Wallet, ShieldCheck,
   Clock3, ExternalLink, LogIn, RefreshCw, Ban, Mail, Phone,
   Megaphone, Activity as ActivityIcon, CreditCard, Coins, RotateCcw, UserRound,
+  Bot, Headset, Radio, Wrench,
 } from "lucide-react";
 import { toast } from "@/components/notifications/toaster";
 import {
   clientById, churnRiskOf, PLAN_META, STATUS_META,
 } from "@/lib/clients-mock";
-import { campaignsFor, activityFor, type PlatCampaign } from "@/lib/admin-analytics";
+import { campaignsFor, activityFor, interventionFor, clientTools, type PlatCampaign } from "@/lib/admin-analytics";
 
 const mono = "font-[family-name:var(--font-data)]";
 const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
@@ -54,6 +55,8 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
   const [tab, setTab] = useState<(typeof TABS)[number]>("Overview");
   const camps = campaignsFor(c.id);
   const activity = activityFor(c);
+  const iv = interventionFor(c.id);
+  const ct = clientTools.find((t) => t.client.id === c.id);
 
   return (
     <div className="mx-auto max-w-[1200px]">
@@ -195,6 +198,14 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
             <UsageStat icon={TrendingUp} label="Connect rate" v={`${c.connectPct}%`} />
             <UsageStat icon={ActivityIcon} label="Success rate" v={`${c.successPct}%`} />
           </div>
+          {iv && (
+            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-foam pt-4 sm:grid-cols-4">
+              <UsageStat icon={Bot} label="AI containment" v={`${iv.containment}%`} />
+              <UsageStat icon={Headset} label="Handoffs" v={`${iv.handoffs.toLocaleString("en-IN")} · ${iv.handoffPer100}/100`} />
+              <UsageStat icon={Radio} label="Barge-ins" v={`${iv.bargeIns.toLocaleString("en-IN")} · ${iv.bargePer1k}/1k`} />
+              <UsageStat icon={Wrench} label="Tool calls" v={ct ? `${(ct.total / 1000).toFixed(1)}k · top: ${ct.top.label}` : "—"} />
+            </div>
+          )}
         </div>
       )}
 

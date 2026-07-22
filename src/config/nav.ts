@@ -60,6 +60,7 @@ export const adminNav: NavItem[] = [
   { label: "Revenue", href: "/admin/revenue", icon: IndianRupee, group: "cp" },
   { label: "Usage", href: "/admin/usage", icon: Gauge, group: "cp" },
   { label: "Unit Economics", href: "/admin/margins", icon: Percent, group: "cp" },
+  { label: "AI Operations", href: "/admin/ai-ops", icon: Bot, group: "cp" },
 
   { label: "Growth & Retention", href: "/admin/growth", icon: Repeat, group: "growth" },
   { label: "Goals", href: "/admin/goals", icon: Target, group: "growth" },

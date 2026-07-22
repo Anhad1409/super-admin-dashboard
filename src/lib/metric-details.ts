@@ -5,7 +5,7 @@ import type { MetricDetail, Breakdown } from "@/components/admin/metric";
 import { clients, platform, planMix, PLAN_META, churnRiskOf, STATUS_META, type Client, type Plan } from "./clients-mock";
 import {
   nrrWaterfall, funnel, funnelStats, revenueQuality, engagement, adoption,
-  economics, margins, growth,
+  economics, margins, growth, interventions, interventionRollup, handoffReasons,
 } from "./admin-analytics";
 
 const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
@@ -176,6 +176,23 @@ export const DETAILS = {
       note: margins.thin.length ? "Heavy usage on low plans — consider re-pricing." : "All clients above 40% margin.",
     }],
     links: [{ label: "Unit economics", href: "/admin/margins" }],
+  }),
+
+  containment: (): MetricDetail => ({
+    title: "AI containment",
+    value: `${interventionRollup.containment}%`,
+    description: "Share of connected calls the AI completes end-to-end without a human — the autonomy north star for a voice-agent platform.",
+    breakdowns: [
+      {
+        label: "Lowest containment first",
+        rows: interventions.slice(0, 6).map((i) => ({ name: i.client.name, value: `${i.containment}%`, pct: i.containment, tint: i.containment < 88 ? "var(--color-danger)" : "var(--color-steam)", href: href(i.client), sub: `${i.handoffs} handoffs`, flag: i.containment < 88 })),
+      },
+      {
+        label: "Why the AI hands off",
+        rows: handoffReasons.map((r) => ({ name: r.reason, value: `${r.pct}%`, pct: r.pct, tint: r.tint })),
+      },
+    ],
+    links: [{ label: "AI Operations", href: "/admin/ai-ops" }],
   }),
 
   concurrency: (): MetricDetail => ({

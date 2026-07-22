@@ -323,3 +323,115 @@ export const benchMedians = {
   success: Math.round(live.reduce((s, c) => s + c.successPct, 0) / live.length),
   health: Math.round(live.reduce((s, c) => s + c.health, 0) / live.length),
 };
+
+// ================= HANDOFFS & BARGE-INS (AI autonomy / trust) =================
+// Containment = share of connected calls the AI finishes without a human.
+// Handoff rate tracks AI capability per client (worse health → more escalations);
+// barge-in rate tracks supervisor trust (younger clients babysit more).
+export type Intervention = {
+  client: Client;
+  connected: number;        // connected calls this month
+  handoffs: number;         // AI → human escalations
+  handoffPer100: number;    // per 100 connected
+  containment: number;      // % fully AI-handled
+  bargeIns: number;         // supervisor barge-ins
+  bargePer1k: number;       // per 1k connected
+  avgPickupSec: number;     // handoff → human pickup
+  slaPct: number;           // pickups within 45s
+  trend: "improving" | "worsening" | "flat";
+};
+
+const monthsLive = (iso: string) => Math.max(1, Math.round((new Date("2026-07-21").getTime() - new Date(iso + "T00:00:00").getTime()) / (30 * 864e5)));
+
+export const interventions: Intervention[] = clients
+  .filter((c) => c.status !== "churned" && c.callsMonth > 0)
+  .map((c) => {
+    const r = rng(hash(c.id + "iv"));
+    const connected = Math.round(c.callsMonth * (c.connectPct / 100));
+    const handoffPer100 = Math.min(18, Math.max(1.2, 2 + (85 - c.health) * 0.22 + r() * 2));
+    const handoffs = Math.round((connected * handoffPer100) / 100);
+    const age = monthsLive(c.signup);
+    const bargePer1k = Math.min(32, Math.max(0.6, 1 + 26 / age + r() * 3));
+    const avgPickupSec = Math.round(16 + (100 - c.health) * 0.7 + r() * 14);
+    return {
+      client: c, connected, handoffs,
+      handoffPer100: Math.round(handoffPer100 * 10) / 10,
+      containment: Math.round((100 - handoffPer100) * 10) / 10,
+      bargeIns: Math.round((connected * bargePer1k) / 1000),
+      bargePer1k: Math.round(bargePer1k * 10) / 10,
+      avgPickupSec,
+      slaPct: Math.max(38, Math.min(99, Math.round(104 - avgPickupSec * 0.9))),
+      trend: (c.health >= 75 ? "improving" : c.health < 55 ? "worsening" : "flat") as Intervention["trend"],
+    };
+  })
+  .sort((a, b) => a.containment - b.containment);
+
+const ivConnected = interventions.reduce((s, i) => s + i.connected, 0);
+export const interventionRollup = {
+  containment: Math.round((1 - interventions.reduce((s, i) => s + i.handoffs, 0) / ivConnected) * 1000) / 10,
+  handoffs: interventions.reduce((s, i) => s + i.handoffs, 0),
+  handoffPer100: Math.round((interventions.reduce((s, i) => s + i.handoffs, 0) / ivConnected) * 1000) / 10,
+  bargeIns: interventions.reduce((s, i) => s + i.bargeIns, 0),
+  avgPickupSec: Math.round(interventions.reduce((s, i) => s + i.avgPickupSec * i.handoffs, 0) / Math.max(1, interventions.reduce((s, i) => s + i.handoffs, 0))),
+  slaPct: Math.round(interventions.reduce((s, i) => s + i.slaPct * i.handoffs, 0) / Math.max(1, interventions.reduce((s, i) => s + i.handoffs, 0))),
+  worst: interventions[0],
+  best: interventions[interventions.length - 1],
+};
+
+// why the AI hands off (platform-wide mix)
+export const handoffReasons = [
+  { reason: "Customer asked for a human", pct: 34, tint: "var(--color-caramel)" },
+  { reason: "Low AI confidence on reply", pct: 26, tint: "var(--color-blueberry)" },
+  { reason: "Negative sentiment detected", pct: 18, tint: "var(--color-danger)" },
+  { reason: "Compliance keyword trigger", pct: 12, tint: "var(--color-steam)" },
+  { reason: "Repeated silence / no input", pct: 10, tint: "var(--color-latte)" },
+];
+export const interventionFor = (id: string) => interventions.find((i) => i.client.id === id);
+
+// ================= TOOL / SKILL USAGE (what agents DO on calls) =================
+// Which tools the AI invokes mid-call, platform-wide and per client. Weighted
+// by the org's use case (collections orgs send payment links, KYC orgs send
+// verification links, …) so the mix tells a true story.
+export type Tool = { key: string; label: string; tint: string };
+export const TOOLS: Tool[] = [
+  { key: "send_payment_link", label: "Send payment link", tint: "var(--color-mango)" },
+  { key: "send_kyc_link", label: "Send KYC link", tint: "var(--color-steam)" },
+  { key: "send_whatsapp", label: "WhatsApp follow-up", tint: "var(--color-success)" },
+  { key: "schedule_callback", label: "Schedule callback", tint: "var(--color-blueberry)" },
+  { key: "update_crm", label: "Update CRM record", tint: "var(--color-caramel)" },
+  { key: "send_sms", label: "Send SMS (DLT)", tint: "var(--color-latte)" },
+  { key: "lookup_account", label: "Account lookup", tint: "var(--color-mocha)" },
+  { key: "check_dnd", label: "DND re-check", tint: "var(--color-danger)" },
+];
+// per-use-case tool weights (must align with TOOLS order)
+const TOOL_WEIGHTS: Record<GoalType, number[]> = {
+  collections: [30, 2, 16, 14, 12, 10, 12, 4],
+  kyc:         [2, 34, 14, 10, 14, 8, 14, 4],
+  leadgen:     [4, 4, 22, 24, 22, 10, 10, 4],
+  onboarding:  [6, 16, 20, 14, 18, 10, 12, 4],
+};
+
+export type ClientTools = { client: Client; total: number; perCall: number; top: Tool; mix: { tool: Tool; calls: number }[] };
+export const clientTools: ClientTools[] = clients
+  .filter((c) => c.status !== "churned" && c.callsMonth > 0)
+  .map((c) => {
+    const r = rng(hash(c.id + "tools"));
+    const connected = Math.round(c.callsMonth * (c.connectPct / 100));
+    const perCall = Math.round((1.3 + r() * 1.4) * 10) / 10; // 1.3–2.7 tool calls per connected call
+    const total = Math.round(connected * perCall);
+    const weights = TOOL_WEIGHTS[goalTypeOf(c.id)];
+    const wsum = weights.reduce((a, b) => a + b, 0);
+    const mix = TOOLS.map((tool, i) => ({ tool, calls: Math.round((total * weights[i]) / wsum) }))
+      .sort((a, b) => b.calls - a.calls);
+    return { client: c, total, perCall, top: mix[0].tool, mix };
+  })
+  .sort((a, b) => b.total - a.total);
+
+export const toolRollup = {
+  total: clientTools.reduce((s, t) => s + t.total, 0),
+  avgPerCall: Math.round((clientTools.reduce((s, t) => s + t.total, 0) / Math.max(1, interventions.reduce((s, i) => s + i.connected, 0))) * 10) / 10,
+  byTool: TOOLS.map((tool) => ({
+    tool,
+    calls: clientTools.reduce((s, ct) => s + (ct.mix.find((m) => m.tool.key === tool.key)?.calls ?? 0), 0),
+  })).sort((a, b) => b.calls - a.calls),
+};

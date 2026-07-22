@@ -13,13 +13,13 @@ import NumberFlow from "@number-flow/react";
 import {
   Building2, IndianRupee, PhoneCall, TrendingUp, AlertTriangle, Sparkles, Search,
   ChevronRight, ShieldAlert, Clock3, Ticket, Wallet, Repeat, Rocket, Target,
-  Layers, PieChart, Users, Gauge, Percent, Activity, BellRing,
+  Layers, PieChart, Users, Gauge, Percent, Activity, BellRing, Bot,
 } from "lucide-react";
 import {
   clients, platform, planMix, mrrSeries, attention, churnRiskOf,
   PLAN_META, STATUS_META, type Plan, type Client,
 } from "@/lib/clients-mock";
-import { revenueQuality, engagement, adoption, margins, funnelStats } from "@/lib/admin-analytics";
+import { revenueQuality, engagement, adoption, margins, funnelStats, interventionRollup } from "@/lib/admin-analytics";
 import { MetricTile } from "@/components/admin/metric";
 import { DETAILS } from "@/lib/metric-details";
 import { cn } from "@/lib/utils";
@@ -159,10 +159,11 @@ export default function ControlPlanePage() {
         <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
         <span className={`${mono} text-[10px] uppercase tracking-wide text-latte`}>tap any metric to drill in</span>
       </div>
-      <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricTile size="lg" icon={Repeat} label="Net revenue retention" value={`${revenueQuality ? "103%" : ""}`} sub="expansion beats churn" tint="var(--color-success)" delta="healthy" detail={DETAILS.nrr()} />
         <MetricTile size="lg" icon={Rocket} label="Activation rate" value={`${funnelStats.activation}%`} sub="signup → first live call" tint="var(--color-caramel)" detail={DETAILS.activation()} />
         <MetricTile size="lg" icon={Target} label="Goal-outcome conversion" value={`${revenueQuality.goalConversion}%`} sub="connected → goal met" tint="var(--color-steam)" detail={DETAILS.goalConversion()} />
+        <MetricTile size="lg" icon={Bot} label="AI containment" value={`${interventionRollup.containment}%`} sub="no human needed" tint="var(--color-blueberry)" detail={DETAILS.containment()} />
       </div>
 
       {/* ===== REVENUE QUALITY ===== */}
