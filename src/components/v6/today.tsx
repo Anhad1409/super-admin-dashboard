@@ -116,7 +116,7 @@ export function V6Today() {
           <div className="flex items-center gap-5">
             <BrewCup pct={pct} />
             <div>
-              <div className="font-[family-name:var(--font-data)] text-5xl font-semibold tracking-tight">{cleared}<span className="text-2xl text-[#caa06a]">/{total}</span></div>
+              <div className="font-[family-name:var(--font-data)] text-5xl font-semibold leading-[1.15] tracking-tight">{cleared}<span className="text-2xl text-[#caa06a]">/{total}</span></div>
               <div className="text-xs uppercase tracking-widest text-[#caa06a]">cleared</div>
               <div className="mt-3 flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs ring-1 ring-white/15"><span className="size-1.5 rounded-full" style={{ background: high ? "#D6705B" : "#9fd8cf" }} /> {Math.round(pct * 100)}% brewed</div>
             </div>

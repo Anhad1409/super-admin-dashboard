@@ -96,7 +96,7 @@ function LiveCampaignsFlip() {
   const [sel, setSel] = useState<LiveCampaign | null>(null);
   return (
     <div className="[perspective:1200px]">
-      <div className={cn("relative h-[168px] w-full transition-transform duration-500 [transform-style:preserve-3d] motion-reduce:transition-none", sel && "[transform:rotateY(180deg)]")}>
+      <div className={cn("relative h-[196px] w-full transition-transform duration-500 [transform-style:preserve-3d] motion-reduce:transition-none", sel && "[transform:rotateY(180deg)]")}>
         {/* front: campaign list */}
         <ul className="absolute inset-0 space-y-1 [backface-visibility:hidden]">
           {liveCampaigns.map((c) => {
@@ -107,7 +107,7 @@ function LiveCampaignsFlip() {
                 <button onClick={() => setSel(c)} className="flex w-full items-center gap-2.5 rounded-xl px-1.5 py-1.5 text-left transition-colors hover:bg-oat/50">
                   <BeanDot color={running ? "var(--color-caramel)" : "var(--color-latte)"} />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5"><span className="truncate text-sm font-medium text-coffee">{c.name}</span>{running && <LiveDot />}</div>
+                    <div className="flex items-center gap-1.5"><span className="truncate text-sm font-medium text-coffee">{c.name}</span>{running && <span className="shrink-0"><LiveDot /></span>}</div>
                     <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-foam"><div className="h-full rounded-full bg-gradient-to-r from-mocha to-caramel" style={{ width: `${fill}%` }} /></div>
                   </div>
                   <div className="text-right text-xs"><div className="font-medium tabular-nums text-coffee">{c.slotsUsed}/{c.slotsCap}</div><div className="capitalize text-muted-foreground">{c.status}</div></div>
@@ -215,7 +215,7 @@ export function V6Dashboard() {
             <div className="w-[92px] shrink-0"><CoffeeCup level={level} live /></div>
             <div className="min-w-0 flex-1">
               <div className="flex items-end gap-2">
-                <span className={`font-serif text-4xl font-semibold leading-none ${tone}`}>{active}</span>
+                <span className={`font-serif text-4xl font-semibold leading-[1.15] ${tone}`}>{active}</span>
                 <span className="mb-0.5 text-sm text-muted-foreground">/ {CAPACITY} slots</span>
                 <span className={`mb-0.5 ml-auto text-lg font-semibold ${tone}`}>{pct}%</span>
               </div>
