@@ -15,11 +15,20 @@ export function V6Sidebar() {
   const router = useRouter();
   const adminMode = pathname.startsWith("/admin");
   const [collapsed, setCollapsed] = useState(false);
+  // ⌘ on Mac, Ctrl elsewhere — resolved on mount so SSR stays stable
+  const [modK, setModK] = useState("⌘K");
+  useEffect(() => {
+    try { if (!/Mac|iPhone|iPad/.test(navigator.platform)) setModK("Ctrl K"); } catch {}
+  }, []);
   // Operate & Analyze always open; AI Studio & Admin are collapsible (default closed).
-  const COLLAPSIBLE = new Set(["studio", "admin"]);
+  // Client app: Operate & Analyze always open; AI Studio & Admin collapsible.
+  // Control plane: the daily "Control Plane" group is always open; the
+  // less-visited Growth / Governance / Team groups collapse (last two closed
+  // by default). Choices persist via vox-nav-groups.
+  const COLLAPSIBLE = new Set(["studio", "admin", "growth", "governance", "team"]);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     operate: true, analyze: true, studio: false, admin: false,
-    cp: true, governance: true, team: true,
+    cp: true, growth: true, governance: false, team: false,
   });
 
   useEffect(() => {
@@ -97,7 +106,7 @@ export function V6Sidebar() {
           {!collapsed && (
             <>
               <span>Search…</span>
-              <kbd className="ml-auto rounded bg-porcelain px-1.5 py-0.5 text-[10px] font-medium text-mocha shadow-sm">⌘K</kbd>
+              <kbd className="ml-auto rounded bg-porcelain px-1.5 py-0.5 text-[10px] font-medium text-mocha shadow-sm">{modK}</kbd>
             </>
           )}
         </button>

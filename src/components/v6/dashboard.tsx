@@ -28,7 +28,7 @@ import { formatDuration, formatINR } from "@/lib/format";
 const card = "rounded-2xl border border-foam bg-porcelain/95 p-3.5 shadow-glass";
 
 const TOUR: TourStep[] = [
-  { sel: '[data-tour="nav"]', title: "Navigate anywhere", body: "Move between Operate, Analyze, AI Studio and Admin. Press ⌘K for instant search." },
+  { sel: '[data-tour="nav"]', title: "Navigate anywhere", body: "Move between Operate, Analyze, AI Studio and Admin. Press ⌘K (Ctrl K on Windows) for instant search." },
   { sel: '[data-tour="capacity"]', title: "Your live capacity", body: "This cup shows call-slots in use vs your purchased channels — keep it under 85% for spike headroom." },
   { sel: '[data-tour="kpis"]', title: "Today at a glance", body: "Key metrics with trends. Click any card to flip it and dive into the detail." },
   { sel: '[data-tour="attention"]', title: "What needs you", body: "Handoffs, low-lead campaigns and compliance flags surface here with quick actions." },
