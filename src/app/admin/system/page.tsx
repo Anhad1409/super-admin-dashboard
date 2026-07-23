@@ -6,6 +6,7 @@
 import { ServerCog, Activity, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { CpHeader, StatTile, Card, Tag, mono } from "@/components/admin/cp";
 import { services, incidents, HEALTH_META } from "@/lib/admin-mock";
+import { listDetail } from "@/lib/metric-details";
 
 const INC_TONE = { investigating: "var(--color-danger)", monitoring: "var(--color-warning)", resolved: "var(--color-success)" } as const;
 
@@ -15,6 +16,25 @@ export default function SystemPage() {
   const overall = degraded === 0 ? "All systems operational" : `${degraded} service${degraded > 1 ? "s" : ""} degraded`;
   const avgUptime = (services.reduce((s, x) => s + x.uptime, 0) / services.length).toFixed(2);
 
+  const svcDetail = listDetail("Services operational", `${operational} / ${services.length}`,
+    "Every service in the stack with its live status and latency.", "By service",
+    services.map((x) => ({
+      name: x.name, value: HEALTH_META[x.status].label, tint: HEALTH_META[x.status].tint,
+      sub: `${x.kind} · ${x.latencyMs}ms`, flag: x.status !== "operational",
+    })));
+  const uptimeDetail = listDetail("Avg uptime · 30d", `${avgUptime}%`,
+    "Uptime per service, weakest first — the blended average hides the stragglers.", "By service · lowest first",
+    [...services].sort((a, b) => a.uptime - b.uptime).map((x) => ({
+      name: x.name, value: `${x.uptime}%`, pct: x.uptime, tint: HEALTH_META[x.status].tint,
+      sub: x.kind, flag: x.uptime < 99,
+    })));
+  const incDetail = listDetail("Open incidents", String(incidents.filter((i) => i.status !== "resolved").length),
+    "The incident feed — open items first.", "Incidents",
+    [...incidents].sort((a, b) => Number(a.status === "resolved") - Number(b.status === "resolved")).map((i) => ({
+      name: i.title, value: i.status, tint: i.status === "resolved" ? "var(--color-success)" : i.status === "investigating" ? "var(--color-danger)" : "var(--color-warning)",
+      sub: `${i.service} · ${i.when}`, flag: i.status !== "resolved",
+    })));
+
   return (
     <div className="mx-auto max-w-[1200px] space-y-5">
       <CpHeader title="System health" subtitle="The infrastructure behind every call — status, latency and incidents."
@@ -22,9 +42,9 @@ export default function SystemPage() {
           <span className="size-2 rounded-full" style={{ background: degraded ? "var(--color-warning)" : "var(--color-success)" }} /> {overall}</span>} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatTile icon={CheckCircle2} label="Services operational" value={`${operational} / ${services.length}`} sub={degraded ? `${degraded} degraded` : "no issues"} tint="var(--color-success)" />
-        <StatTile icon={Activity} label="Avg uptime · 30d" value={`${avgUptime}%`} sub="across all services" tint="var(--color-steam)" />
-        <StatTile icon={AlertTriangle} label="Open incidents" value={incidents.filter((i) => i.status !== "resolved").length} sub={`${incidents.filter((i) => i.status === "resolved").length} resolved recently`} tint="var(--color-mango)" />
+        <StatTile icon={CheckCircle2} label="Services operational" value={`${operational} / ${services.length}`} sub={degraded ? `${degraded} degraded` : "no issues"} tint="var(--color-success)" detail={svcDetail} />
+        <StatTile icon={Activity} label="Avg uptime · 30d" value={`${avgUptime}%`} sub="across all services" tint="var(--color-steam)" detail={uptimeDetail} />
+        <StatTile icon={AlertTriangle} label="Open incidents" value={incidents.filter((i) => i.status !== "resolved").length} sub={`${incidents.filter((i) => i.status === "resolved").length} resolved recently`} tint="var(--color-mango)" detail={incDetail} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

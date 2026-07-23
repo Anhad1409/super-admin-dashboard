@@ -55,6 +55,19 @@ export default function AiOpsPage() {
     }],
   };
 
+  const pickupDetail = {
+    title: "Human pickup", value: `${iv.avgPickupSec}s`,
+    description: "Seconds for a human to pick up after the AI hands off, per company — slowest first. Flagged rows miss the 45s SLA too often.",
+    breakdowns: [{
+      label: "By company · slowest first",
+      rows: [...interventions].sort((a, b) => b.avgPickupSec - a.avgPickupSec).map((i) => ({
+        name: i.client.name, value: `${i.avgPickupSec}s`, pct: i.avgPickupSec,
+        tint: i.slaPct < 70 ? "var(--color-danger)" : "var(--color-steam)",
+        href: `/admin/clients/${i.client.id}`, sub: `${i.slaPct}% in 45s · ${i.handoffs} handoffs`, flag: i.slaPct < 70,
+      })),
+    }],
+  };
+
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="AI Operations" subtitle="How the agents behave on real calls — autonomy, escalations, supervisor trust, and the tools they reach for." />
@@ -63,7 +76,7 @@ export default function AiOpsPage() {
         <StatTile icon={Bot} label="AI containment" value={`${iv.containment}%`} sub="calls finished without a human" tint="var(--color-steam)" detail={containmentDetail} />
         <StatTile icon={Headset} label="Handoffs" value={iv.handoffs.toLocaleString("en-IN")} sub={`${iv.handoffPer100} per 100 connected`} tint="var(--color-caramel)" detail={handoffDetail} />
         <StatTile icon={Radio} label="Barge-ins" value={iv.bargeIns.toLocaleString("en-IN")} sub="supervisor interventions" tint="var(--color-mango)" detail={bargeDetail} />
-        <StatTile icon={Timer} label="Human pickup" value={`${iv.avgPickupSec}s`} sub={`${iv.slaPct}% within 45s SLA`} tint={iv.slaPct >= 80 ? "var(--color-success)" : "var(--color-warning)"} />
+        <StatTile icon={Timer} label="Human pickup" value={`${iv.avgPickupSec}s`} sub={`${iv.slaPct}% within 45s SLA`} tint={iv.slaPct >= 80 ? "var(--color-success)" : "var(--color-warning)"} detail={pickupDetail} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.5fr]">

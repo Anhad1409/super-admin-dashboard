@@ -7,12 +7,19 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Megaphone, Play, Calendar, CheckCircle2, Search } from "lucide-react";
 import { CpHeader, StatTile, Card, Tag, mono } from "@/components/admin/cp";
-import { campaigns, activeCampaignCount, type PlatCampaign } from "@/lib/admin-analytics";
+import { campaigns, activeCampaignCount, campaignsFor, type PlatCampaign } from "@/lib/admin-analytics";
+import { companyDetail } from "@/lib/metric-details";
+import type { Client } from "@/lib/clients-mock";
 
 const STATUS_TONE: Record<PlatCampaign["status"], string> = {
   active: "var(--color-success)", scheduled: "var(--color-info)", paused: "var(--color-warning)", completed: "var(--color-latte)",
 };
 const FILTERS = ["All", "active", "scheduled", "paused", "completed"] as const;
+
+// per-client extractors for the KPI drill-downs
+const activeOf = (c: Client) => campaignsFor(c.id).filter((x) => x.status === "active").length;
+const leadsOf = (c: Client) => campaignsFor(c.id).reduce((s, x) => s + x.leads, 0);
+const convOf = (c: Client) => campaignsFor(c.id).reduce((s, x) => s + x.conversions, 0);
 
 export default function CampaignsPage() {
   const router = useRouter();
@@ -27,15 +34,49 @@ export default function CampaignsPage() {
   const totalLeads = campaigns.reduce((s, c) => s + c.leads, 0);
   const totalConv = campaigns.reduce((s, c) => s + c.conversions, 0);
 
+  const totalDetail = companyDetail({
+    title: "Total campaigns",
+    value: String(campaigns.length),
+    description: "Every campaign on the platform — live, scheduled, paused or completed — broken down by the client running it.",
+    of: (c) => campaignsFor(c.id).length,
+    sub: (c) => { const a = activeOf(c); return a ? `${a} active` : "none active"; },
+    label: "Campaigns by client",
+  });
+  const activeDetail = companyDetail({
+    title: "Active now",
+    value: String(activeCampaignCount),
+    description: "Campaigns dialing today, per client — clients with nothing currently live are hidden.",
+    of: activeOf,
+    sub: (c) => `${campaignsFor(c.id).filter((x) => x.status === "active").reduce((s, x) => s + x.leads, 0).toLocaleString("en-IN")} leads dialing`,
+    label: "Active campaigns by client",
+  });
+  const leadsDetail = companyDetail({
+    title: "Leads in flight",
+    value: totalLeads.toLocaleString("en-IN"),
+    description: "Queued plus dialed leads across all campaigns, bifurcated by client.",
+    of: leadsOf,
+    sub: (c) => { const k = campaignsFor(c.id).length; return `${k} campaign${k === 1 ? "" : "s"}`; },
+    label: "Leads by client",
+  });
+  const convDetail = companyDetail({
+    title: "Conversions",
+    value: totalConv.toLocaleString("en-IN"),
+    description: "Successful outcomes across every campaign — flagged clients convert under 15% of their leads.",
+    of: convOf,
+    sub: (c) => { const L = leadsOf(c); return L ? `${Math.round((convOf(c) / L) * 100)}% of leads` : undefined; },
+    flag: (c) => { const L = leadsOf(c); return L > 0 && convOf(c) / L < 0.15; },
+    label: "Conversions by client",
+  });
+
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Campaigns" subtitle="Every campaign running across the platform — one cross-client board." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={Megaphone} label="Total campaigns" value={campaigns.length} sub="across all clients" tint="var(--color-caramel)" />
-        <StatTile icon={Play} label="Active now" value={activeCampaignCount} sub="dialing today" tint="var(--color-success)" />
-        <StatTile icon={Calendar} label="Leads in flight" value={totalLeads.toLocaleString("en-IN")} sub="queued + dialed" tint="var(--color-steam)" />
-        <StatTile icon={CheckCircle2} label="Conversions" value={totalConv.toLocaleString("en-IN")} sub={`${Math.round((totalConv / totalLeads) * 100)}% of leads`} tint="var(--color-mango)" />
+        <StatTile icon={Megaphone} label="Total campaigns" value={campaigns.length} sub="across all clients" tint="var(--color-caramel)" detail={totalDetail} />
+        <StatTile icon={Play} label="Active now" value={activeCampaignCount} sub="dialing today" tint="var(--color-success)" detail={activeDetail} />
+        <StatTile icon={Calendar} label="Leads in flight" value={totalLeads.toLocaleString("en-IN")} sub="queued + dialed" tint="var(--color-steam)" detail={leadsDetail} />
+        <StatTile icon={CheckCircle2} label="Conversions" value={totalConv.toLocaleString("en-IN")} sub={`${Math.round((totalConv / totalLeads) * 100)}% of leads`} tint="var(--color-mango)" detail={convDetail} />
       </div>
 
       <Card>

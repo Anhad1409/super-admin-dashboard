@@ -33,6 +33,55 @@ function byPlan(valueOf: (list: Client[]) => number, fmt: (n: number) => string)
   };
 }
 
+/** Generic company-wise bifurcation: give it a per-client extractor and it
+    returns a MetricDetail listing every live company, sorted, with bars,
+    click-through to the client page, and optional flags. Use this to make
+    ANY aggregate stat open into its per-company breakdown. */
+export function companyDetail(opts: {
+  title: string;
+  value: string;
+  description?: string;
+  of: (c: Client) => number;
+  fmt?: (n: number) => string;
+  pool?: Client[];
+  sub?: (c: Client) => string | undefined;
+  flag?: (c: Client) => boolean;
+  includeZero?: boolean;
+  asc?: boolean;
+  label?: string;
+  note?: string;
+  links?: { label: string; href: string }[];
+}): MetricDetail {
+  const fmt = opts.fmt ?? ((n: number) => n.toLocaleString("en-IN"));
+  let pool = (opts.pool ?? live).filter((c) => opts.includeZero || opts.of(c) !== 0);
+  pool = [...pool].sort((a, b) => (opts.asc ? opts.of(a) - opts.of(b) : opts.of(b) - opts.of(a)));
+  return {
+    title: opts.title,
+    value: opts.value,
+    description: opts.description,
+    breakdowns: [{
+      label: opts.label ?? "By company",
+      rows: pool.map((c) => ({
+        name: c.name,
+        value: fmt(opts.of(c)),
+        pct: Math.abs(opts.of(c)),
+        tint: opts.flag?.(c) ? "var(--color-danger)" : PLAN_META[c.plan].tint,
+        href: href(c),
+        sub: opts.sub?.(c),
+        flag: opts.flag?.(c),
+      })),
+      note: opts.note,
+    }],
+    links: opts.links,
+  };
+}
+
+/** Simple passthrough for stats that don't aggregate clients (staff,
+    services…) — same drawer, custom rows. */
+export function listDetail(title: string, value: string, description: string | undefined, label: string, rows: { name: string; value: string; pct?: number; tint?: string; href?: string; sub?: string; flag?: boolean }[], links?: { label: string; href: string }[], note?: string): MetricDetail {
+  return { title, value, description, breakdowns: [{ label, rows, note }], links };
+}
+
 export const DETAILS = {
   // ---- north star ----
   nrr: (): MetricDetail => ({

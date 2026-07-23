@@ -7,20 +7,70 @@ import { useRouter } from "next/navigation";
 import { IndianRupee, TrendingUp, Percent, Coins, ChevronRight, AlertTriangle } from "lucide-react";
 import { CpHeader, StatTile, Card, mono, compactINR } from "@/components/admin/cp";
 import { margins, costModel, economics, COST_PER_MIN } from "@/lib/admin-analytics";
+import { companyDetail } from "@/lib/metric-details";
+
+const eco = new Map(economics.map((e) => [e.client.id, e]));
+const ecoPool = economics.map((e) => e.client);
+const signedINR = (n: number) => (n < 0 ? `−${compactINR(Math.abs(n))}` : compactINR(n));
 
 export default function MarginsPage() {
   const router = useRouter();
   const maxCost = Math.max(...costModel.map((c) => c.perMin));
+
+  const revenueDetail = companyDetail({
+    title: "Billed revenue",
+    value: compactINR(margins.revenue),
+    description: "Subscription plus overage-minute revenue billed this month, split across every paying client.",
+    pool: ecoPool,
+    of: (c) => eco.get(c.id)?.revenue ?? 0,
+    fmt: compactINR,
+    sub: (c) => `${eco.get(c.id)!.marginPct}% margin`,
+    includeZero: true,
+  });
+  const cogsDetail = companyDetail({
+    title: "Cost of revenue",
+    value: compactINR(margins.cogs),
+    description: `Talk-minutes consumed times the blended ₹${COST_PER_MIN.toFixed(2)}/min provider cost, per client.`,
+    pool: ecoPool,
+    of: (c) => eco.get(c.id)?.cogs ?? 0,
+    fmt: compactINR,
+    sub: (c) => `${c.minutesMonth.toLocaleString("en-IN")} min`,
+    includeZero: true,
+  });
+  const profitDetail = companyDetail({
+    title: "Gross profit",
+    value: compactINR(margins.grossProfit),
+    description: "Revenue minus COGS per client this month — flagged rows are running at a loss.",
+    pool: ecoPool,
+    of: (c) => eco.get(c.id)?.margin ?? 0,
+    fmt: signedINR,
+    sub: (c) => `${eco.get(c.id)!.marginPct}% margin`,
+    flag: (c) => (eco.get(c.id)?.margin ?? 0) < 0,
+    includeZero: true,
+  });
+  const marginPctDetail = companyDetail({
+    title: "Gross margin",
+    value: `${margins.grossMarginPct}%`,
+    description: "Gross margin per client, thinnest first — flagged rows sit below the 40% watch line.",
+    pool: ecoPool,
+    of: (c) => eco.get(c.id)?.marginPct ?? 0,
+    fmt: (n) => `${n}%`,
+    sub: (c) => `${compactINR(eco.get(c.id)!.revenue)} revenue`,
+    flag: (c) => (eco.get(c.id)?.marginPct ?? 0) < 40,
+    asc: true,
+    includeZero: true,
+    note: `${margins.thin.length} clients under 40% margin`,
+  });
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Unit economics" subtitle="What the platform earns after the cost of every talk-minute — revenue, COGS and margin." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={IndianRupee} label="Billed revenue" value={compactINR(margins.revenue)} sub="subscription + usage" tint="var(--color-caramel)" />
-        <StatTile icon={Coins} label="Cost of revenue" value={compactINR(margins.cogs)} sub={`₹${COST_PER_MIN.toFixed(2)} / talk-minute`} tint="var(--color-mocha)" />
-        <StatTile icon={TrendingUp} label="Gross profit" value={compactINR(margins.grossProfit)} sub="this month" tint="var(--color-success)" />
-        <StatTile icon={Percent} label="Gross margin" value={`${margins.grossMarginPct}%`} sub={`${margins.thin.length} thin-margin clients`} tint="var(--color-steam)" delta="+2 pts" />
+        <StatTile icon={IndianRupee} label="Billed revenue" value={compactINR(margins.revenue)} sub="subscription + usage" tint="var(--color-caramel)" detail={revenueDetail} />
+        <StatTile icon={Coins} label="Cost of revenue" value={compactINR(margins.cogs)} sub={`₹${COST_PER_MIN.toFixed(2)} / talk-minute`} tint="var(--color-mocha)" detail={cogsDetail} />
+        <StatTile icon={TrendingUp} label="Gross profit" value={compactINR(margins.grossProfit)} sub="this month" tint="var(--color-success)" detail={profitDetail} />
+        <StatTile icon={Percent} label="Gross margin" value={`${margins.grossMarginPct}%`} sub={`${margins.thin.length} thin-margin clients`} tint="var(--color-steam)" delta="+2 pts" detail={marginPctDetail} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.4fr]">

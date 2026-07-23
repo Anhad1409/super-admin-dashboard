@@ -6,6 +6,8 @@
 import { TrendingUp, TrendingDown, Repeat, Percent } from "lucide-react";
 import { CpHeader, StatTile, Card, mono, compactINR } from "@/components/admin/cp";
 import { growth, cohorts, nrrWaterfall } from "@/lib/admin-analytics";
+import { listDetail } from "@/lib/metric-details";
+import { clients, PLAN_META, STATUS_META } from "@/lib/clients-mock";
 
 function retentionColor(pct: number) {
   if (pct >= 95) return "var(--color-success)";
@@ -25,15 +27,89 @@ export default function GrowthPage() {
   ];
   const maxMonths = Math.max(...cohorts.map((c) => c.ret.length));
 
+  const nrrDetail = listDetail(
+    "Net revenue retention",
+    `${nrrWaterfall.nrr}%`,
+    "Revenue kept from existing clients this month — expansion net of contraction and churn, excluding new business.",
+    "This month · MRR movement",
+    [
+      { name: "Starting MRR", value: compactINR(nrrWaterfall.starting), pct: nrrWaterfall.starting, tint: "var(--color-mocha)" },
+      { name: "+ Expansion", value: `+${compactINR(nrrWaterfall.expansion)}`, pct: nrrWaterfall.expansion, tint: "var(--color-success)" },
+      { name: "− Contraction", value: `−${compactINR(Math.abs(nrrWaterfall.contraction))}`, pct: Math.abs(nrrWaterfall.contraction), tint: "var(--color-danger)", flag: true },
+      { name: "− Churn", value: `−${compactINR(Math.abs(nrrWaterfall.churn))}`, pct: Math.abs(nrrWaterfall.churn), tint: "var(--color-danger)", flag: true },
+      { name: "Retained MRR", value: compactINR(nrrWaterfall.starting + nrrWaterfall.expansion + nrrWaterfall.contraction + nrrWaterfall.churn), pct: nrrWaterfall.starting + nrrWaterfall.expansion + nrrWaterfall.contraction + nrrWaterfall.churn, tint: "var(--color-steam)" },
+    ],
+    [{ label: "Open revenue", href: "/admin/revenue" }],
+    "New business is excluded — NRR isolates how existing accounts compound on their own.",
+  );
+
+  const grossDetail = listDetail(
+    "Gross retention",
+    `${nrrWaterfall.grossRetention}%`,
+    "Revenue kept before any expansion — starting MRR minus contraction and churn, the floor of the business.",
+    "This month · MRR kept",
+    [
+      { name: "Starting MRR", value: compactINR(nrrWaterfall.starting), pct: nrrWaterfall.starting, tint: "var(--color-mocha)" },
+      { name: "− Contraction", value: `−${compactINR(Math.abs(nrrWaterfall.contraction))}`, pct: Math.abs(nrrWaterfall.contraction), tint: "var(--color-danger)", flag: true },
+      { name: "− Churn", value: `−${compactINR(Math.abs(nrrWaterfall.churn))}`, pct: Math.abs(nrrWaterfall.churn), tint: "var(--color-danger)", flag: true },
+      { name: "Retained before expansion", value: compactINR(nrrWaterfall.starting + nrrWaterfall.contraction + nrrWaterfall.churn), pct: nrrWaterfall.starting + nrrWaterfall.contraction + nrrWaterfall.churn, tint: "var(--color-steam)" },
+    ],
+    [{ label: "Open revenue", href: "/admin/revenue" }],
+    "Expansion is excluded on purpose — this is what survives with zero upsell.",
+  );
+
+  const quickRatioDetail = listDetail(
+    "Quick ratio",
+    `${growth.quickRatio}×`,
+    "MRR gained (new business + expansion) for every rupee of MRR lost (churn + contraction) — above 4× is efficient growth.",
+    "MRR gained vs lost",
+    [
+      { name: "+ New business", value: `+${compactINR(nrrWaterfall.newBiz)}`, pct: nrrWaterfall.newBiz, tint: "var(--color-success)" },
+      { name: "+ Expansion", value: `+${compactINR(nrrWaterfall.expansion)}`, pct: nrrWaterfall.expansion, tint: "var(--color-success)" },
+      { name: "− Contraction", value: `−${compactINR(Math.abs(nrrWaterfall.contraction))}`, pct: Math.abs(nrrWaterfall.contraction), tint: "var(--color-danger)", flag: true },
+      { name: "− Churn", value: `−${compactINR(Math.abs(nrrWaterfall.churn))}`, pct: Math.abs(nrrWaterfall.churn), tint: "var(--color-danger)", flag: true },
+    ],
+    undefined,
+    "Ratio is measured over the trailing 90 days; bars show this month's MRR movement.",
+  );
+
+  const churned = clients.filter((c) => c.status === "churned");
+  const trials = clients.filter((c) => c.status === "trial");
+  const logoChurnDetail = listDetail(
+    "Logo churn · 90d",
+    `${growth.churnedLogos}`,
+    "Companies that cancelled in the window, plus live trials still deciding — the logos most likely to move this number next.",
+    "Churned & trial logos",
+    [
+      ...churned.map((c) => ({
+        name: c.name,
+        value: STATUS_META[c.status].label,
+        tint: "var(--color-danger)",
+        href: `/admin/clients/${c.id}`,
+        sub: `${PLAN_META[c.plan].label} · last active ${c.lastActive}`,
+        flag: true,
+      })),
+      ...trials.map((c) => ({
+        name: c.name,
+        value: STATUS_META[c.status].label,
+        tint: STATUS_META.trial.dot,
+        href: `/admin/clients/${c.id}`,
+        sub: `${PLAN_META[c.plan].label} plan · health ${c.health}`,
+      })),
+    ],
+    [{ label: "Open client roster", href: "/admin/clients" }],
+    `${growth.logoRetention}% of logos retained over the window.`,
+  );
+
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Growth & retention" subtitle="How revenue and logos compound — net revenue retention, cohorts and churn." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={Repeat} label="Net revenue retention" value={`${nrrWaterfall.nrr}%`} sub="expansion beats churn" tint="var(--color-success)" delta={nrrWaterfall.nrr >= 100 ? "healthy" : null} />
-        <StatTile icon={Percent} label="Gross retention" value={`${nrrWaterfall.grossRetention}%`} sub="before expansion" tint="var(--color-steam)" />
-        <StatTile icon={TrendingUp} label="Quick ratio" value={`${growth.quickRatio}×`} sub="(new + expansion) / churn" tint="var(--color-caramel)" />
-        <StatTile icon={TrendingDown} label="Logo churn · 90d" value={growth.churnedLogos} sub={`${growth.logoRetention}% logo retention`} tint="var(--color-danger)" />
+        <StatTile icon={Repeat} label="Net revenue retention" value={`${nrrWaterfall.nrr}%`} sub="expansion beats churn" tint="var(--color-success)" delta={nrrWaterfall.nrr >= 100 ? "healthy" : null} detail={nrrDetail} />
+        <StatTile icon={Percent} label="Gross retention" value={`${nrrWaterfall.grossRetention}%`} sub="before expansion" tint="var(--color-steam)" detail={grossDetail} />
+        <StatTile icon={TrendingUp} label="Quick ratio" value={`${growth.quickRatio}×`} sub="(new + expansion) / churn" tint="var(--color-caramel)" detail={quickRatioDetail} />
+        <StatTile icon={TrendingDown} label="Logo churn · 90d" value={growth.churnedLogos} sub={`${growth.logoRetention}% logo retention`} tint="var(--color-danger)" detail={logoChurnDetail} />
       </div>
 
       <Card title="Net revenue retention" right={<span className={`${mono} text-[11px] text-latte`}>this month · MRR</span>}>

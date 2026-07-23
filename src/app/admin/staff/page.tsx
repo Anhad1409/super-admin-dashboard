@@ -6,10 +6,31 @@ import { UsersRound, ShieldCheck, ShieldAlert, Plus } from "lucide-react";
 import { toast } from "@/components/notifications/toaster";
 import { CpHeader, StatTile, Card, Tag, mono } from "@/components/admin/cp";
 import { staff, ROLE_META } from "@/lib/admin-mock";
+import { listDetail } from "@/lib/metric-details";
 
 export default function StaffPage() {
   const superAdmins = staff.filter((s) => s.role === "super_admin").length;
   const no2fa = staff.filter((s) => !s.twoFA).length;
+
+  const teamDetail = listDetail("Team members", String(staff.length),
+    "Everyone with control-plane access, by activity this month.", "By member",
+    [...staff].sort((a, b) => b.actions30d - a.actions30d).map((m) => ({
+      name: m.name, value: `${m.actions30d} actions`, pct: m.actions30d,
+      tint: ROLE_META[m.role].tint, sub: ROLE_META[m.role].label, flag: !m.twoFA,
+    })), undefined, "Flagged members are missing 2FA.");
+  const tfaDetail = listDetail("2FA enabled", `${staff.length - no2fa} / ${staff.length}`,
+    "Two-factor status per member — enforce before the next login for anyone off.", "By member",
+    [...staff].sort((a, b) => Number(a.twoFA) - Number(b.twoFA)).map((m) => ({
+      name: m.name, value: m.twoFA ? "On" : "Off",
+      tint: m.twoFA ? "var(--color-success)" : "var(--color-danger)",
+      sub: ROLE_META[m.role].label, flag: !m.twoFA,
+    })));
+  const no2faDetail = listDetail("Missing 2FA", String(no2fa),
+    no2fa ? "These accounts can act on client data without a second factor." : "Every staff account is secured.",
+    "Needs enforcement",
+    staff.filter((m) => !m.twoFA).map((m) => ({
+      name: m.name, value: m.email, tint: "var(--color-danger)", sub: ROLE_META[m.role].label, flag: true,
+    })));
 
   return (
     <div className="mx-auto max-w-[1200px] space-y-5">
@@ -17,9 +38,9 @@ export default function StaffPage() {
         right={<button onClick={() => toast({ title: "Invite staff", body: "Open the staff invite flow.", severity: "info" })} className="inline-flex items-center gap-1.5 rounded-full bg-caramel/20 px-3.5 py-2 text-xs font-semibold text-caramel hover:bg-caramel/30"><Plus className="size-3.5" /> Invite staff</button>} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatTile icon={UsersRound} label="Team members" value={staff.length} sub={`${superAdmins} super admins`} tint="var(--color-caramel)" />
-        <StatTile icon={ShieldCheck} label="2FA enabled" value={`${staff.length - no2fa} / ${staff.length}`} sub="of all staff" tint="var(--color-success)" />
-        <StatTile icon={ShieldAlert} label="Missing 2FA" value={no2fa} sub={no2fa ? "enforce before next login" : "all secured"} tint={no2fa ? "var(--color-danger)" : "var(--color-success)"} />
+        <StatTile icon={UsersRound} label="Team members" value={staff.length} sub={`${superAdmins} super admins`} tint="var(--color-caramel)" detail={teamDetail} />
+        <StatTile icon={ShieldCheck} label="2FA enabled" value={`${staff.length - no2fa} / ${staff.length}`} sub="of all staff" tint="var(--color-success)" detail={tfaDetail} />
+        <StatTile icon={ShieldAlert} label="Missing 2FA" value={no2fa} sub={no2fa ? "enforce before next login" : "all secured"} tint={no2fa ? "var(--color-danger)" : "var(--color-success)"} detail={no2faDetail} />
       </div>
 
       <Card title="Team">

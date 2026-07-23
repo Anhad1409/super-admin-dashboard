@@ -5,12 +5,66 @@
 
 import { useRouter } from "next/navigation";
 import { ShieldCheck, ShieldAlert, Clock3, FileCheck2, ChevronRight } from "lucide-react";
-import { CpHeader, StatTile, Card, Tag, mono } from "@/components/admin/cp";
-import { clients } from "@/lib/clients-mock";
+import { CpHeader, StatTile, Card, Tag, mono, compactINR } from "@/components/admin/cp";
+import { clients, PLAN_META, type Client } from "@/lib/clients-mock";
 import { compliance } from "@/lib/admin-mock";
+import { companyDetail } from "@/lib/metric-details";
 
 const DLT_TONE = { registered: "var(--color-success)", in_progress: "var(--color-warning)", missing: "var(--color-danger)", not_required: "var(--color-latte)" } as const;
 const DLT_LABEL = { registered: "Registered", in_progress: "In progress", missing: "Missing", not_required: "Not required" } as const;
+
+const planMrr = (c: Client) => `${PLAN_META[c.plan].label} · ${compactINR(c.mrr)} MRR`;
+
+const dltRegisteredDetail = companyDetail({
+  title: "DLT registered",
+  value: String(compliance.dlt.registered),
+  description: "Clients with an approved DLT entity registration — cleared to send promotional traffic inside the TRAI calling window.",
+  pool: clients.filter((c) => c.dltStatus === "registered"),
+  of: (c) => c.callsMonth,
+  fmt: (n) => `${n.toLocaleString("en-IN")} calls`,
+  sub: planMrr,
+  includeZero: true,
+  note: "Bars scale by calls placed this month.",
+});
+
+const dltInProgressDetail = companyDetail({
+  title: "DLT in progress",
+  value: String(compliance.dlt.inProgress),
+  description: "Registration filed but not yet approved by the operator — chase these before their next promo campaign goes out.",
+  pool: clients.filter((c) => c.dltStatus === "in_progress"),
+  of: (c) => c.callsMonth,
+  fmt: (n) => `${n.toLocaleString("en-IN")} calls`,
+  sub: planMrr,
+  flag: (c) => !c.dndScrub,
+  includeZero: true,
+  note: "Flagged rows also have DND scrubbing off — a double compliance gap.",
+});
+
+const dltMissingDetail = companyDetail({
+  title: "DLT missing",
+  value: String(compliance.dlt.missing),
+  description: "No DLT registration on file — promotional calls are blocked for these clients until they register.",
+  pool: clients.filter((c) => c.dltStatus === "missing"),
+  of: (c) => c.callsMonth,
+  fmt: (n) => `${n.toLocaleString("en-IN")} calls`,
+  sub: planMrr,
+  flag: (c) => c.callsMonth > 0,
+  includeZero: true,
+  note: "Flagged rows are still placing calls this month despite the missing registration.",
+});
+
+const dndOffDetail = companyDetail({
+  title: "DND scrubbing off",
+  value: String(compliance.dndOff.length),
+  description: "Live clients dialing without DND-registry scrubbing — block their promo batches until scrubbing is enforced.",
+  pool: compliance.dndOff,
+  of: (c) => c.callsMonth,
+  fmt: (n) => `${n.toLocaleString("en-IN")} calls`,
+  sub: planMrr,
+  flag: () => true,
+  includeZero: true,
+  note: "Every row here is a violation risk under TRAI's UCC rules.",
+});
 
 export default function CompliancePage() {
   const router = useRouter();
@@ -21,10 +75,10 @@ export default function CompliancePage() {
       <CpHeader title="Compliance" subtitle="DLT registration, DND scrubbing and TRAI calling-window posture across the platform." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={FileCheck2} label="DLT registered" value={compliance.dlt.registered} sub={`of ${live.length} live clients`} tint="var(--color-success)" />
-        <StatTile icon={Clock3} label="DLT in progress" value={compliance.dlt.inProgress} sub="registration pending" tint="var(--color-warning)" />
-        <StatTile icon={ShieldAlert} label="DLT missing" value={compliance.dlt.missing} sub="promo calls blocked" tint="var(--color-danger)" />
-        <StatTile icon={ShieldCheck} label="DND scrubbing off" value={compliance.dndOff.length} sub="needs enforcement" tint={compliance.dndOff.length ? "var(--color-danger)" : "var(--color-success)"} />
+        <StatTile icon={FileCheck2} label="DLT registered" value={compliance.dlt.registered} sub={`of ${live.length} live clients`} tint="var(--color-success)" detail={dltRegisteredDetail} />
+        <StatTile icon={Clock3} label="DLT in progress" value={compliance.dlt.inProgress} sub="registration pending" tint="var(--color-warning)" detail={dltInProgressDetail} />
+        <StatTile icon={ShieldAlert} label="DLT missing" value={compliance.dlt.missing} sub="promo calls blocked" tint="var(--color-danger)" detail={dltMissingDetail} />
+        <StatTile icon={ShieldCheck} label="DND scrubbing off" value={compliance.dndOff.length} sub="needs enforcement" tint={compliance.dndOff.length ? "var(--color-danger)" : "var(--color-success)"} detail={dndOffDetail} />
       </div>
 
       {(compliance.dndOff.length > 0 || compliance.dltGaps.length > 0) && (

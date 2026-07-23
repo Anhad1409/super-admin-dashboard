@@ -8,7 +8,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Target, CheckCircle2, AlertTriangle, Gauge } from "lucide-react";
 import { CpHeader, StatTile, Card, mono } from "@/components/admin/cp";
-import { orgGoals, goalRollup, GOAL_META, type GoalType } from "@/lib/admin-analytics";
+import { orgGoals, goalRollup, goalsFor, GOAL_META, type GoalType } from "@/lib/admin-analytics";
+import { companyDetail, listDetail } from "@/lib/metric-details";
 
 const FILTERS = ["All", "collections", "kyc", "leadgen", "onboarding"] as const;
 
@@ -25,15 +26,44 @@ export default function GoalsPage() {
     breakdowns: [{ label: "By use case", rows: goalRollup.byType.map((t) => ({ name: GOAL_META[t.type].label, sub: `${t.count}`, value: `${t.avgAttainment}%`, pct: t.avgAttainment, tint: GOAL_META[t.type].tint })) }],
   };
 
+  const goalSub = (id: string) => { const g = goalsFor(id); return g ? `${GOAL_META[g.type].label} · ${g.actual}% vs ${g.target}% target` : undefined; };
+
+  const onTrackDetail = companyDetail({
+    title: "Orgs on track", value: `${goalRollup.onTrack}`,
+    description: "Every org at or above 100% of its own use-case target this month — attainment shown per company, best first.",
+    pool: orgGoals.filter((g) => g.attainment >= 100).map((g) => g.client),
+    of: (c) => goalsFor(c.id)?.attainment ?? 0, fmt: (n) => `${n}%`,
+    sub: (c) => goalSub(c.id), label: "By company · attainment",
+  });
+
+  const behindDetail = companyDetail({
+    title: "Orgs behind target", value: `${goalRollup.atRisk}`,
+    description: "Orgs under 85% attainment on their own goal, worst first — these need an intervention before the next renewal conversation.",
+    pool: orgGoals.filter((g) => g.attainment < 85).map((g) => g.client),
+    of: (c) => goalsFor(c.id)?.attainment ?? 0, fmt: (n) => `${n}%`,
+    asc: true, flag: () => true,
+    sub: (c) => goalSub(c.id), label: "By company · attainment",
+  });
+
+  const useCaseDetail = listDetail(
+    "Use cases tracked", `${goalRollup.byType.length}`,
+    "Distinct goal types live across the client base — each measured on its own north-star metric with its own target.",
+    "By use case",
+    goalRollup.byType.map((t) => ({
+      name: GOAL_META[t.type].label, value: `${t.count} orgs`, pct: t.count, tint: GOAL_META[t.type].tint,
+      sub: `${GOAL_META[t.type].metric} · ${t.avgAttainment}% avg attainment`, flag: t.avgAttainment < 85,
+    })),
+  );
+
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Goals by organisation" subtitle="Every client measured against the metric that matters for its use case — not one flat KPI." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile icon={Gauge} label="Avg attainment" value={`${goalRollup.avgAttainment}%`} sub="actual vs target · all orgs" tint="var(--color-caramel)" detail={attDetail} />
-        <StatTile icon={CheckCircle2} label="On track" value={goalRollup.onTrack} sub="at or above target" tint="var(--color-success)" />
-        <StatTile icon={AlertTriangle} label="Behind target" value={goalRollup.atRisk} sub="under 85% attainment" tint="var(--color-danger)" />
-        <StatTile icon={Target} label="Use cases tracked" value={goalRollup.byType.length} sub="distinct goal types" tint="var(--color-steam)" />
+        <StatTile icon={CheckCircle2} label="On track" value={goalRollup.onTrack} sub="at or above target" tint="var(--color-success)" detail={onTrackDetail} />
+        <StatTile icon={AlertTriangle} label="Behind target" value={goalRollup.atRisk} sub="under 85% attainment" tint="var(--color-danger)" detail={behindDetail} />
+        <StatTile icon={Target} label="Use cases tracked" value={goalRollup.byType.length} sub="distinct goal types" tint="var(--color-steam)" detail={useCaseDetail} />
       </div>
 
       {/* by use case */}

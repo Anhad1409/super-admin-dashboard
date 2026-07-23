@@ -5,20 +5,60 @@
 
 import { MapPin, Building2, PhoneCall } from "lucide-react";
 import { CpHeader, StatTile, Card, mono } from "@/components/admin/cp";
-import { geography } from "@/lib/admin-analytics";
-import { platform } from "@/lib/clients-mock";
+import { geography, stateOf } from "@/lib/admin-analytics";
+import { clients, platform, PLAN_META } from "@/lib/clients-mock";
+import { companyDetail, listDetail } from "@/lib/metric-details";
 
 export default function GeographyPage() {
   const maxCalls = Math.max(...geography.map((g) => g.calls), 1);
   const topState = geography[0];
+
+  const statesDetail = listDetail(
+    "States live",
+    String(geography.length),
+    "Every Indian state with at least one live client organisation, ranked by the call volume it generates.",
+    "By state",
+    geography.map((g, i) => ({
+      name: g.state,
+      value: `${(g.calls / 1000).toFixed(1)}k calls`,
+      pct: g.calls,
+      tint: i === 0 ? "var(--color-mango)" : "var(--color-caramel)",
+      sub: `${g.clients} client${g.clients > 1 ? "s" : ""} · ${Math.round((g.calls / platform.callsMonth) * 100)}% share`,
+      flag: g.clients === 1,
+    })),
+    [{ label: "All clients", href: "/admin/clients" }],
+    "Single-client states are flagged — their entire volume rests on one account.",
+  );
+  const topRegionDetail = companyDetail({
+    title: "Top region",
+    value: topState.state,
+    description: `${topState.state} leads the map — ${topState.clients} client organisations generating ${Math.round((topState.calls / platform.callsMonth) * 100)}% of platform call volume this month.`,
+    of: (c) => c.callsMonth,
+    pool: clients.filter((c) => c.status !== "churned" && stateOf(c.id) === topState.state),
+    fmt: (n) => `${n.toLocaleString("en-IN")} calls`,
+    sub: (c) => PLAN_META[c.plan].label,
+    flag: (c) => c.status === "past_due",
+    label: `Companies in ${topState.state}`,
+    links: [{ label: "All clients", href: "/admin/clients" }],
+  });
+  const callsDetail = companyDetail({
+    title: "Calls this month",
+    value: platform.callsMonth.toLocaleString("en-IN"),
+    description: "Every call the platform placed this calendar month, bifurcated by company — each row links to the client page.",
+    of: (c) => c.callsMonth,
+    sub: (c) => `${stateOf(c.id)} · ${PLAN_META[c.plan].label}`,
+    flag: (c) => c.status === "past_due",
+    note: "Past-due accounts are flagged — their dialing continues until suspension.",
+  });
+
   return (
     <div className="mx-auto max-w-[1200px] space-y-5">
       <CpHeader title="Geography" subtitle="Clients and call volume by state — where demand concentrates across India." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatTile icon={MapPin} label="States live" value={geography.length} sub="across India" tint="var(--color-steam)" />
-        <StatTile icon={Building2} label="Top region" value={topState.state} sub={`${topState.clients} clients · ${(topState.calls / 1000).toFixed(0)}k calls`} tint="var(--color-caramel)" />
-        <StatTile icon={PhoneCall} label="Calls this month" value={platform.callsMonth.toLocaleString("en-IN")} sub="platform-wide" tint="var(--color-mango)" />
+        <StatTile icon={MapPin} label="States live" value={geography.length} sub="across India" tint="var(--color-steam)" detail={statesDetail} />
+        <StatTile icon={Building2} label="Top region" value={topState.state} sub={`${topState.clients} clients · ${(topState.calls / 1000).toFixed(0)}k calls`} tint="var(--color-caramel)" detail={topRegionDetail} />
+        <StatTile icon={PhoneCall} label="Calls this month" value={platform.callsMonth.toLocaleString("en-IN")} sub="platform-wide" tint="var(--color-mango)" detail={callsDetail} />
       </div>
 
       <Card title="Call volume by state">

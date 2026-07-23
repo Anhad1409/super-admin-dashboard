@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { LifeBuoy, AlertTriangle, Clock3, CheckCircle2 } from "lucide-react";
 import { CpHeader, StatTile, Card, Tag, mono } from "@/components/admin/cp";
 import { tickets, PRIORITY_META, type Priority } from "@/lib/admin-mock";
+import { companyDetail, listDetail } from "@/lib/metric-details";
 
 const STATUS_TONE = { open: "var(--color-danger)", pending: "var(--color-warning)", resolved: "var(--color-success)" } as const;
 const FILTERS = ["All", "urgent", "high", "normal", "low"] as const;
@@ -18,14 +19,34 @@ export default function SupportPage() {
   const urgent = tickets.filter((t) => t.priority === "urgent").length;
   const open = tickets.filter((t) => t.status === "open").length;
 
+  const openDetail = companyDetail({
+    title: "Open tickets", value: String(open),
+    description: "Open tickets per company. Compare against call volume — a small caller with many tickets is drowning.",
+    of: (c) => c.openTickets,
+    fmt: (n) => `${n} ticket${n > 1 ? "s" : ""}`,
+    sub: (c) => `${(c.callsMonth / 1000).toFixed(1)}k calls`,
+    flag: (c) => c.openTickets >= 4,
+  });
+  const urgentSet = tickets.filter((t) => t.priority === "urgent");
+  const urgentDetail = listDetail("Urgent tickets", String(urgent),
+    "Every urgent ticket in the queue — respond today.", "By company",
+    urgentSet.map((t) => ({ name: t.client.name, value: t.subject, tint: "var(--color-danger)", href: `/admin/clients/${t.client.id}`, sub: `${t.id} · ${t.age} old · ${t.assignee}`, flag: true })));
+  const assignees = [...new Set(tickets.map((t) => t.assignee))];
+  const responseDetail = listDetail("Avg first response", "2.4h",
+    "Queue load by assignee — response time tracks inversely with open load.", "By assignee",
+    assignees.map((a) => {
+      const mine = tickets.filter((t) => t.assignee === a);
+      return { name: a, value: `${mine.length} tickets`, pct: mine.length, tint: "var(--color-caramel)", sub: `${mine.filter((t) => t.priority === "urgent").length} urgent` };
+    }));
+
   return (
     <div className="mx-auto max-w-[1300px] space-y-5">
       <CpHeader title="Support" subtitle="Every open ticket across the platform, prioritised by urgency." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatTile icon={LifeBuoy} label="Open tickets" value={open} sub={`${tickets.length} total in queue`} tint="var(--color-steam)" />
-        <StatTile icon={AlertTriangle} label="Urgent" value={urgent} sub="need a response today" tint="var(--color-danger)" />
-        <StatTile icon={Clock3} label="Avg first response" value="2.4h" sub="last 30 days" tint="var(--color-caramel)" />
+        <StatTile icon={LifeBuoy} label="Open tickets" value={open} sub={`${tickets.length} total in queue`} tint="var(--color-steam)" detail={openDetail} />
+        <StatTile icon={AlertTriangle} label="Urgent" value={urgent} sub="need a response today" tint="var(--color-danger)" detail={urgentDetail} />
+        <StatTile icon={Clock3} label="Avg first response" value="2.4h" sub="last 30 days" tint="var(--color-caramel)" detail={responseDetail} />
       </div>
 
       <Card>

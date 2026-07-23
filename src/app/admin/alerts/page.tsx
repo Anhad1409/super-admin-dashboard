@@ -8,8 +8,21 @@ import { useRouter } from "next/navigation";
 import { AlertTriangle, ShieldAlert, Bell, Activity, ChevronRight } from "lucide-react";
 import { CpHeader, StatTile, Card, Tag, mono } from "@/components/admin/cp";
 import { alerts, alertCounts, SEVERITY_META, type Severity } from "@/lib/admin-analytics";
+import { listDetail } from "@/lib/metric-details";
 
 const FILTERS = ["All", "critical", "warning", "info"] as const;
+
+// Drill-down: every alert of a severity, one row per alert, linked to the raising client.
+const severityDetail = (s: Severity, description: string) => listDetail(
+  `${SEVERITY_META[s].label} alerts`, String(alertCounts[s]), description, "By company",
+  alerts.filter((a) => a.severity === s).map((a) => ({
+    name: a.client.name, value: a.title, tint: SEVERITY_META[s].tint,
+    href: `/admin/clients/${a.client.id}`, sub: `${a.kind} · ${a.when}`, flag: a.client.status === "past_due",
+  })),
+  undefined, "A client can raise more than one alert.");
+const criticalDetail = severityDetail("critical", "Alerts that demand action today — overdue invoices and clients at high risk of churning.");
+const warningDetail = severityDetail("warning", "Threshold breaches to review this week — low connect rates, compliance gaps and wallets running dry.");
+const infoDetail = severityDetail("info", "Non-urgent signals worth watching — unusual usage spikes across active clients.");
 
 export default function AlertsPage() {
   const router = useRouter();
@@ -23,9 +36,9 @@ export default function AlertsPage() {
           <Bell className="size-3.5" /> {alerts.length} active</span>} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatTile icon={ShieldAlert} label="Critical" value={alertCounts.critical} sub="act today" tint="var(--color-danger)" />
-        <StatTile icon={AlertTriangle} label="Warning" value={alertCounts.warning} sub="review this week" tint="var(--color-warning)" />
-        <StatTile icon={Activity} label="Info" value={alertCounts.info} sub="worth watching" tint="var(--color-steam)" />
+        <StatTile icon={ShieldAlert} label="Critical" value={alertCounts.critical} sub="act today" tint="var(--color-danger)" detail={criticalDetail} />
+        <StatTile icon={AlertTriangle} label="Warning" value={alertCounts.warning} sub="review this week" tint="var(--color-warning)" detail={warningDetail} />
+        <StatTile icon={Activity} label="Info" value={alertCounts.info} sub="worth watching" tint="var(--color-steam)" detail={infoDetail} />
       </div>
 
       <Card>

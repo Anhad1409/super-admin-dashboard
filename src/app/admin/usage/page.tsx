@@ -5,8 +5,9 @@
 
 import { PhoneCall, Clock3, Radio, Gauge, ArrowUpRight } from "lucide-react";
 import { CpHeader, StatTile, Card, Tag, mono, monoLabel } from "@/components/admin/cp";
-import { clients, platform } from "@/lib/clients-mock";
+import { clients, platform, PLAN_META } from "@/lib/clients-mock";
 import { services, HEALTH_META } from "@/lib/admin-mock";
+import { companyDetail, listDetail } from "@/lib/metric-details";
 
 export default function UsagePage() {
   // platform-wide 14-day volume = sum of client sparks
@@ -16,15 +17,56 @@ export default function UsagePage() {
   const topMax = top[0]?.callsMonth || 1;
   const telephony = services.filter((s) => ["Voice gateway", "Speech-to-text", "Text-to-speech", "Language model", "Call orchestration"].includes(s.name));
 
+  const callsDetail = companyDetail({
+    title: "Calls this month",
+    value: platform.callsMonth.toLocaleString("en-IN"),
+    description: "Every call the platform placed this calendar month, bifurcated by company — heaviest dialers first.",
+    of: (c) => c.callsMonth,
+    sub: (c) => PLAN_META[c.plan].label,
+    flag: (c) => c.status === "past_due",
+    note: "Past-due accounts are flagged — their dialing continues until suspension.",
+    links: [{ label: "All clients", href: "/admin/clients" }],
+  });
+  const minutesDetail = companyDetail({
+    title: "Minutes this month",
+    value: `${(platform.minutesMonth / 1000).toFixed(0)}k`,
+    description: "Talk time consumed per company this month — billing follows minutes, not call count.",
+    of: (c) => c.minutesMonth,
+    sub: (c) => (c.callsMonth > 0 ? `${(c.minutesMonth / c.callsMonth).toFixed(1)} min / call` : undefined),
+    flag: (c) => c.status === "past_due",
+  });
+  const connectDetail = companyDetail({
+    title: "Avg connect rate",
+    value: `${platform.avgConnect}%`,
+    description: "Answered vs dialed per company — the headline number is a straight average across live clients.",
+    of: (c) => c.connectPct,
+    fmt: (n) => `${n}%`,
+    sub: (c) => `${c.callsMonth.toLocaleString("en-IN")} calls`,
+    flag: (c) => c.connectPct < 55,
+    note: "Below 55% usually means stale number lists or DND-heavy segments — flagged rows need list hygiene.",
+  });
+  const channelsDetail = listDetail(
+    "Channels live now",
+    "7 / 10",
+    "Concurrent call capacity across the telephony pool — each channel carries one live call.",
+    "Channel pool",
+    [
+      { name: "In use", value: "7", pct: 7, tint: "var(--color-mango)", sub: "carrying live calls" },
+      { name: "Free headroom", value: "3", pct: 3, tint: "var(--color-steam)", sub: "ready to dial" },
+    ],
+    undefined,
+    "Peak this week hit 9 / 10 during the 11:00–13:00 dial window — consider adding channels before festive campaigns.",
+  );
+
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Usage & telephony" subtitle="Every call the platform placed — volume, connect rate and the provider stack behind it." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={PhoneCall} label="Calls this month" value={platform.callsMonth.toLocaleString("en-IN")} sub="across all clients" tint="var(--color-mango)" delta="+8.1%" />
-        <StatTile icon={Clock3} label="Minutes this month" value={`${(platform.minutesMonth / 1000).toFixed(0)}k`} sub="≈ 6,100 hrs of talk time" tint="var(--color-caramel)" />
-        <StatTile icon={Gauge} label="Avg connect rate" value={`${platform.avgConnect}%`} sub="answered / dialed" tint="var(--color-steam)" />
-        <StatTile icon={Radio} label="Channels live now" value="7 / 10" sub="concurrent call capacity" tint="var(--color-blueberry)" />
+        <StatTile icon={PhoneCall} label="Calls this month" value={platform.callsMonth.toLocaleString("en-IN")} sub="across all clients" tint="var(--color-mango)" delta="+8.1%" detail={callsDetail} />
+        <StatTile icon={Clock3} label="Minutes this month" value={`${(platform.minutesMonth / 1000).toFixed(0)}k`} sub="≈ 6,100 hrs of talk time" tint="var(--color-caramel)" detail={minutesDetail} />
+        <StatTile icon={Gauge} label="Avg connect rate" value={`${platform.avgConnect}%`} sub="answered / dialed" tint="var(--color-steam)" detail={connectDetail} />
+        <StatTile icon={Radio} label="Channels live now" value="7 / 10" sub="concurrent call capacity" tint="var(--color-blueberry)" detail={channelsDetail} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.6fr_1fr]">
