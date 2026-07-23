@@ -57,7 +57,7 @@ export function V6Sidebar() {
       className={cn(
         "z-20 flex h-full shrink-0 flex-col border-r bg-porcelain transition-[width] duration-300 ease-out",
         adminMode ? "border-espresso/25" : "border-sidebar-border",
-        collapsed ? "w-[68px]" : "w-60"
+        collapsed ? "w-[68px]" : "w-52"
       )}
     >
       {/* brand */}
@@ -89,7 +89,7 @@ export function V6Sidebar() {
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("open-command-palette"))}
           className={cn(
-            "mx-3 mb-2 flex items-center gap-2 rounded-xl border border-foam bg-oat/60 px-2.5 py-2 text-sm text-muted-foreground hover:bg-foam",
+            "mx-3 mb-2 flex items-center gap-2 rounded-xl border border-foam bg-oat/60 px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-foam",
             collapsed && "justify-center px-0"
           )}
         >
@@ -133,14 +133,14 @@ export function V6Sidebar() {
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors",
+                    "flex items-center gap-2.5 rounded-xl px-2.5 py-[7px] text-[13px] font-medium transition-colors",
                     collapsed && "justify-center px-0",
                     active
                       ? "bg-sidebar-accent text-sidebar-accent-foreground"
                       : "text-mocha/80 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
                   )}
                 >
-                  <Icon className="size-[18px] shrink-0" strokeWidth={2} />
+                  <Icon className="size-4 shrink-0" strokeWidth={2} />
                   {!collapsed && <span className="truncate">{item.label}</span>}
                 </Link>
               );
