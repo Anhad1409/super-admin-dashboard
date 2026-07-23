@@ -148,7 +148,7 @@ export default function TestingPage() {
             return (
               <button key={s.id} onClick={() => openSession(s)}
                 className="flex w-full items-center gap-4 px-5 py-3.5 text-left transition-colors hover:bg-oat/30">
-                <span className={cn("inline-flex w-[118px] shrink-0 items-center justify-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium", m.cls)}>
+                <span className={cn("inline-flex w-[118px] shrink-0 items-center justify-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium", m.cls)}>
                   <m.Icon className={cn("size-3", s.status === "running" && "animate-spin")} /> {m.label}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -192,14 +192,14 @@ export default function TestingPage() {
                   </button>
                 </div>
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                  <span className={cn("rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize",
+                  <span className={cn("rounded-full border px-2.5 py-0.5 text-[11px] font-medium capitalize",
                     open.disposition ? DISPO_CLS[open.disposition] : "border-foam bg-oat/50 text-mocha")}>
                     Disposition: {open.disposition ?? "—"}
                   </span>
-                  <span className={cn(mono, "rounded-full border border-foam bg-oat/50 px-2.5 py-1 text-[11px] text-coffee tabular-nums")}>
+                  <span className={cn(mono, "rounded-full border border-foam bg-oat/50 px-2.5 py-0.5 text-[11px] text-coffee tabular-nums")}>
                     Quality: {open.quality != null ? `${open.quality}/100` : "—"}
                   </span>
-                  <span className="rounded-full border border-foam bg-oat/50 px-2.5 py-1 text-[11px] text-mocha tabular-nums">
+                  <span className="rounded-full border border-foam bg-oat/50 px-2.5 py-0.5 text-[11px] text-mocha tabular-nums">
                     {open.turns} turns
                   </span>
                 </div>

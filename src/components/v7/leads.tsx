@@ -131,7 +131,7 @@ export function V7Leads() {
                 {/* score: pill + meter + number */}
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className={cn("inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium", meta.pill)}>
+                    <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium", meta.pill)}>
                       {meta.icon}{meta.label}
                     </span>
                     <span className="font-[family-name:var(--font-data)] text-[11px] text-mocha tabular-nums">{l.score}</span>

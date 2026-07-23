@@ -30,7 +30,7 @@ export default function AlertsPage() {
   const rows = useMemo(() => filter === "All" ? alerts : alerts.filter((a) => a.severity === filter), [filter]);
 
   return (
-    <div className="mx-auto max-w-[1200px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Alerts" subtitle="Threshold breaches and anomalies across every client — triaged by severity."
         right={<span className={`${mono} flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${alertCounts.critical ? "border-danger/40 bg-danger/12 text-danger" : "border-success/40 bg-success/15 text-success"}`}>
           <Bell className="size-3.5" /> {alerts.length} active</span>} />
@@ -50,7 +50,7 @@ export default function AlertsPage() {
             </button>
           ))}
         </div>
-        <ul className="space-y-2">
+        <ul className="space-y-3">
           {rows.map((a) => {
             const meta = SEVERITY_META[a.severity];
             return (
@@ -61,7 +61,7 @@ export default function AlertsPage() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[13.5px] font-semibold text-coffee">{a.title}</span>
+                      <span className="text-[13px] font-semibold text-coffee">{a.title}</span>
                       <Tag c={meta.tint}>{meta.label}</Tag>
                       <span className={`${mono} rounded bg-oat/70 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-mocha`}>{a.kind}</span>
                     </div>

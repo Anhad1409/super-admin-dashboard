@@ -61,7 +61,7 @@ export default function UsagePage() {
         {KPIS.map((k) => (
           <div key={k.label} className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="flex items-center gap-2"><GlazedTile icon={k.icon} tint={k.c} size="sm" /><span className={monoLabel}>{k.label}</span></div>
-            <div className="mt-2 font-serif text-[26px] font-semibold leading-none text-coffee tabular-nums">{k.value}</div>
+            <div className="mt-2 font-serif text-[24px] font-semibold leading-none text-coffee tabular-nums">{k.value}</div>
             <div className="mt-1.5 text-[11px] text-muted-foreground">{k.sub}</div>
           </div>
         ))}

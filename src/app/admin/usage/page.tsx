@@ -83,7 +83,7 @@ export default function UsagePage() {
         </Card>
 
         <Card title="Provider stack">
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {telephony.map((s) => (
               <div key={s.name} className="flex items-center justify-between gap-3">
                 <div className="min-w-0">

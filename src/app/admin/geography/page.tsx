@@ -52,7 +52,7 @@ export default function GeographyPage() {
   });
 
   return (
-    <div className="mx-auto max-w-[1200px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Geography" subtitle="Clients and call volume by state — where demand concentrates across India." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -80,10 +80,10 @@ export default function GeographyPage() {
         {geography.slice(0, 6).map((g) => {
           const share = Math.round((g.calls / platform.callsMonth) * 100);
           return (
-            <div key={g.state} className="rounded-2xl border border-foam bg-porcelain p-4 shadow-glass">
+            <div key={g.state} className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
               <div className="flex items-center gap-2"><MapPin className="size-4 text-caramel" /><span className="text-[14px] font-semibold text-coffee">{g.state}</span></div>
               <div className="mt-2 flex items-baseline gap-2">
-                <span className="font-serif text-[22px] font-semibold text-coffee tabular-nums">{(g.calls / 1000).toFixed(1)}k</span>
+                <span className="font-serif text-[24px] font-semibold text-coffee tabular-nums">{(g.calls / 1000).toFixed(1)}k</span>
                 <span className={`${mono} text-[10px] uppercase tracking-wide text-latte`}>calls · {share}% share</span>
               </div>
               <div className="mt-1 text-[11px] text-muted-foreground">{g.clients} client organisation{g.clients > 1 ? "s" : ""}</div>

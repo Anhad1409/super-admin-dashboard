@@ -36,7 +36,7 @@ export default function SystemPage() {
     })));
 
   return (
-    <div className="mx-auto max-w-[1200px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="System health" subtitle="The infrastructure behind every call — status, latency and incidents."
         right={<span className={`${mono} flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${degraded ? "border-warning/40 bg-warning/15 text-warning" : "border-success/40 bg-success/15 text-success"}`}>
           <span className="size-2 rounded-full" style={{ background: degraded ? "var(--color-warning)" : "var(--color-success)" }} /> {overall}</span>} />

@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
           )}
 
           {/* executive summary */}
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <h2 className="font-serif text-xl font-semibold text-coffee">Executive Summary</h2>
               <span className="font-[family-name:var(--font-data)] text-[11px] text-latte">{formatDate(pts[0]?.date)} – {formatDate(pts[pts.length - 1]?.date)}</span>
@@ -264,7 +264,7 @@ export default function AnalyticsPage() {
                   <b className="text-coffee">Conclusion:</b> latency is not the primary constraint yet — conversation design and scripting quality remain the main area to inspect.
                 </li>
               </ul>
-              <div className="grid grid-cols-2 gap-2.5 self-start">
+              <div className="grid grid-cols-2 gap-3 self-start">
                 <Tile label="Pickup range" value={`${pickup.min}–${pickup.max}%`} sub={`${range} reporting days`} tone="good" />
                 <Tile label="Connected calls" value={m.connected.toLocaleString()} sub={`${connectPct}% of ${m.calls.toLocaleString()} total`} />
                 <Tile label="Positive outcomes" value={String(m.conversions)} sub={`${convPct}% of connected`} tone="good" />
@@ -278,7 +278,7 @@ export default function AnalyticsPage() {
           </section>
 
           {/* day-by-day metric matrix */}
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-mocha">Day-by-Day Performance</h2>
               <span className="font-[family-name:var(--font-data)] text-[11px] text-latte">{range} reporting days</span>
@@ -329,7 +329,7 @@ export default function AnalyticsPage() {
           </section>
 
           {/* responsiveness & latency */}
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <Zap className="size-5 text-caramel" />
               <h2 className="font-serif text-xl font-semibold text-coffee">Responsiveness and Latency</h2>
@@ -348,7 +348,7 @@ export default function AnalyticsPage() {
                   <p className="mt-1 text-[13px] text-muted-foreground">Latency is not the primary constraint yet, but it should stay on the watch list. Conversation design and scripting quality remain the main area to inspect.</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2.5 self-start">
+              <div className="grid grid-cols-2 gap-3 self-start">
                 <Tile label="Measured calls" value={Math.round(m.calls * 0.52).toLocaleString()} sub={`${range} reporting days`} tone="good" icon={Activity} color="var(--color-steam)" />
                 <Tile label="Average latency" value="704 ms" sub="mean turn latency" icon={Zap} color="var(--color-caramel)" />
                 <Tile label="P95 latency" value="~1,581 ms" sub="95th percentile turn latency" tone="warn" icon={Clock} />
@@ -359,7 +359,7 @@ export default function AnalyticsPage() {
 
           {/* post-call summary + alerts */}
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
-            <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+            <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-serif text-lg font-semibold text-coffee">Post-Call Summary</h2>
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-steam"><span className="size-1.5 animate-pulse rounded-full bg-steam" /> Live results</span>
@@ -371,7 +371,7 @@ export default function AnalyticsPage() {
                 <Tile label="Best conversion bucket" value={formatDate(bestDay?.date)} sub={`${bestDay?.conversions || Math.round((bestDay?.completed ?? 0) * 0.18)} conversions that day`} tone="good" icon={CalendarCheck} />
               </div>
             </section>
-            <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+            <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
               <button onClick={() => setAlertsOpen((v) => !v)} className="flex w-full items-center gap-3">
                 <span className="grid size-9 place-items-center rounded-xl bg-warning/10 text-warning"><AlertTriangle className="size-4" /></span>
                 <span className="flex-1 text-left">
@@ -390,7 +390,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* answered call time decay */}
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <Clock className="size-5 text-caramel" />
               <h2 className="font-serif text-xl font-semibold text-coffee">Answered Call Time Decay</h2>
@@ -434,7 +434,7 @@ export default function AnalyticsPage() {
           </section>
 
           {/* call activity */}
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <Activity className="size-5 text-caramel" />
@@ -486,7 +486,7 @@ export default function AnalyticsPage() {
           </section>
 
           {/* call activity with range + granularity */}
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-mocha">Call Activity</h2>
               <div className="flex flex-wrap items-center gap-2">
@@ -505,7 +505,7 @@ export default function AnalyticsPage() {
             <AreaChart data={activity} series={[{ key: "calls", label: "Total calls", color: "var(--color-latte)" }, { key: "completed", label: "Completed", color: "var(--color-success)" }, { key: "conversions", label: "Conversions", color: "var(--color-caramel)" }]} />
           </section>
 
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <h2 className="mb-5 text-sm font-semibold uppercase tracking-wider text-mocha">Funnel — {range} days</h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
               {[
@@ -527,7 +527,7 @@ export default function AnalyticsPage() {
 
       {tab === "Providers" && (
         <div className="space-y-6">
-          <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+          <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-mocha">Provider performance</h2>
             <div className="space-y-4">
               {providers.map((p) => (
@@ -565,7 +565,7 @@ export default function AnalyticsPage() {
       )}
 
       {tab === "Live" && (
-        <section className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+        <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
           <div className="flex items-center gap-2"><Activity className="size-5 text-caramel" /><h2 className="font-serif text-lg font-semibold text-coffee">Live snapshot</h2><span className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-success/12 px-2.5 py-1 text-xs font-medium text-success"><span className="size-1.5 animate-pulse rounded-full bg-success" /> Live</span></div>
           <p className="mt-2 text-sm text-muted-foreground">Real-time concurrency, connect rate and alerts live on the dedicated <a href="/realtime-analytics" className="font-medium text-caramel">Live Analytics</a> screen.</p>
         </section>

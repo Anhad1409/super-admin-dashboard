@@ -149,7 +149,7 @@ function Header({ range, setRange, summary }: {
               {RANGES.map((r) => (
                 <button key={r.key} type="button" onClick={() => setRange(r.key)}
                   className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                    "rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                     range === r.key ? "bg-brand text-brand-foreground shadow-cta" : "text-mocha hover:text-coffee",
                   )}>
                   {r.label}
@@ -314,7 +314,7 @@ function AttentionCard() {
   return (
     <SectionCard title="Needs attention" count={`${open.length} open`} className="flex h-full flex-col">
       {open.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-5 py-10 text-center">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-5 py-12 text-center">
           <CircleCheck className="size-6 text-success" />
           <p className="text-sm text-muted-foreground">Nothing needs you right now.</p>
         </div>
@@ -349,7 +349,7 @@ function CampaignCard() {
   return (
     <SectionCard title="Campaign performance" count={`${activeCampaigns.length} active`} className="flex h-full flex-col">
       {activeCampaigns.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-3 px-5 py-10 text-center">
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 px-5 py-12 text-center">
           <p className="text-sm text-muted-foreground">No campaigns are running right now.</p>
           <Link href="/campaigns/quick" className={pillSolid}><Plus className="size-4" /> New campaign</Link>
         </div>

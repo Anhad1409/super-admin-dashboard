@@ -22,7 +22,7 @@ export default function AuditPage() {
   const rows = useMemo(() => filter === "All" ? audit : audit.filter((a) => a.kind === filter), [filter]);
 
   return (
-    <div className="mx-auto max-w-[1100px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Audit log" subtitle="Every privileged action in the control plane — who did what, to which client, when." />
 
       <Card>

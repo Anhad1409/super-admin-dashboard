@@ -86,7 +86,7 @@ export default function FunnelPage() {
   );
 
   return (
-    <div className="mx-auto max-w-[1200px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Activation funnel" subtitle="Where new signups turn into live, paying clients — and where they fall away." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

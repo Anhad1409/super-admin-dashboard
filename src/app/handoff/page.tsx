@@ -64,21 +64,21 @@ export default function HandoffPage() {
         ]}
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
         {FILTERS.map((f) => (
           <Chip key={f} active={filter === f} onClick={() => setFilter(filter === f ? "All" : f)} dot={filterDot[f]} count={counts[f]}>
             {f}
           </Chip>
         ))}
         <button onClick={() => setTestMode((v) => !v)}
-          className={cn("ml-auto flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium shadow-glass transition-colors",
+          className={cn("ml-auto flex h-8 items-center gap-1.5 rounded-full border px-3 text-[12px] font-medium shadow-glass transition-colors",
             testMode ? "border-steam/40 bg-steam/10 text-steam" : "border-foam bg-porcelain text-latte hover:text-mocha")}>
           <FlaskConical className="size-3.5" /> Test calls
         </button>
       </div>
 
       {cards.length === 0 ? (
-        <div className="flex flex-col items-center gap-2.5 rounded-2xl border border-foam bg-porcelain py-16 text-center shadow-glass">
+        <div className="flex flex-col items-center gap-2.5 rounded-2xl border border-foam bg-porcelain py-12 text-center shadow-glass">
           <GlazedTile icon={Headset} tint="var(--color-success)" size="lg" />
           <p className="font-serif text-lg text-coffee">Nothing to review here</p>
           <p className="text-sm text-mocha">Calls the bot escalates land on this board the moment they end.</p>
@@ -102,7 +102,7 @@ export default function HandoffPage() {
                       <div className="font-[family-name:var(--font-data)] text-[11px] text-latte">{c.phone}</div>
                     </div>
                   </div>
-                  <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-medium", statusTone[c.status])}>{c.status}</span>
+                  <span className={cn("shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-medium", statusTone[c.status])}>{c.status}</span>
                 </div>
 
                 {/* campaign line */}

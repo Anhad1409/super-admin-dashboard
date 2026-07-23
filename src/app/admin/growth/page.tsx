@@ -135,8 +135,8 @@ export default function GrowthPage() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-center">
             <thead>
-              <tr className={`${mono} text-[9.5px] uppercase tracking-[0.1em] text-latte`}>
-                <th className="py-2 pr-3 text-left font-medium">Cohort</th>
+              <tr className={`${mono} text-[9.5px] uppercase tracking-[0.12em] text-latte`}>
+                <th className="py-2.5 pr-3 text-left font-medium">Cohort</th>
                 <th className="px-2 font-medium">Size</th>
                 {Array.from({ length: maxMonths }, (_, i) => <th key={i} className="px-1 font-medium">M{i}</th>)}
               </tr>

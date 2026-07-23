@@ -77,7 +77,7 @@ export default function ForecastPage() {
   const maxV = Math.max(...forecast.mrr.map((p) => p.v));
 
   return (
-    <div className="mx-auto max-w-[1300px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Forecast" subtitle="Projected revenue, at-risk MRR and the clients about to run their wallets dry." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -102,7 +102,7 @@ export default function ForecastPage() {
         </Card>
 
         <Card title="Wallet runway" right={<span className={`${mono} text-[11px] text-latte`}>soonest to dry</span>}>
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {runways.slice(0, 8).map((r) => {
               const tint = r.days < 15 ? "var(--color-danger)" : r.days < 30 ? "var(--color-warning)" : "var(--color-success)";
               return (

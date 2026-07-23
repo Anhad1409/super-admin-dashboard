@@ -118,7 +118,7 @@ export default function CallMonitorPage() {
       <div className="mb-4 flex flex-wrap gap-2">
         {TABS.map((t) => (
           <button key={t} onClick={() => setTab(t)}
-            className={cn("flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium transition-all",
+            className={cn("flex h-8 items-center gap-1.5 rounded-full border px-3 text-[12px] font-medium transition-all",
               tab === t ? "border-caramel bg-brand text-brand-foreground shadow-cta" : "border-foam bg-porcelain text-mocha shadow-glass hover:border-latte hover:text-coffee")}>
             {t === "Active Calls" ? <Radio className="size-3.5" /> : t === "My Sessions" ? <UserRound className="size-3.5" /> : <History className="size-3.5" />}
             {t}
@@ -165,7 +165,7 @@ export default function CallMonitorPage() {
                   <div className="truncate text-[13px] text-coffee">{c.campaign}</div>
                   <div className="text-[11px] text-muted-foreground">Agent {c.agent}</div>
                 </div>
-                <div><span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium", meta.pill)}>{meta.label}</span></div>
+                <div><span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium", meta.pill)}>{meta.label}</span></div>
                 <div>
                   <div className="flex items-center justify-between font-[family-name:var(--font-data)] text-[11px] tabular-nums">
                     <span className="text-latte">sentiment</span>
@@ -215,7 +215,7 @@ export default function CallMonitorPage() {
                     <div className="truncate font-[family-name:var(--font-data)] text-[11px] text-latte">call {h.id.slice(0, 8)}…</div>
                   </div>
                 </div>
-                <div><span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium", modeTone[h.mode])}>{h.mode}</span></div>
+                <div><span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium", modeTone[h.mode])}>{h.mode}</span></div>
                 <div className="truncate text-[13px] text-mocha">{h.campaign}</div>
                 <div className="font-[family-name:var(--font-data)] text-[13px] font-semibold text-coffee tabular-nums">{fmtDur(h.durS)}</div>
                 <div className="text-right font-[family-name:var(--font-data)] text-[11px] text-latte">{h.started}</div>

@@ -96,12 +96,12 @@ export default function MarginsPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-left">
               <thead><tr className={`${mono} border-b border-foam text-[9.5px] uppercase tracking-[0.12em] text-latte`}>
-                <th className="py-2 font-medium">Client</th><th className="text-right font-medium">Revenue</th><th className="text-right font-medium">COGS</th><th className="text-right font-medium">Margin</th><th className="pl-3 font-medium">%</th>
+                <th className="py-2.5 font-medium">Client</th><th className="text-right font-medium">Revenue</th><th className="text-right font-medium">COGS</th><th className="text-right font-medium">Margin</th><th className="pl-3 font-medium">%</th>
               </tr></thead>
               <tbody>
                 {economics.map((e) => (
                   <tr key={e.client.id} onClick={() => router.push(`/admin/clients/${e.client.id}`)} className="cursor-pointer border-b border-foam/60 last:border-0 hover:bg-oat/30">
-                    <td className="py-2.5 text-[13px] font-medium text-coffee">{e.client.name}</td>
+                    <td className="py-3 text-[13px] font-medium text-coffee">{e.client.name}</td>
                     <td className="text-right text-[12.5px] text-mocha tabular-nums">{compactINR(e.revenue)}</td>
                     <td className="text-right text-[12.5px] text-latte tabular-nums">{compactINR(e.cogs)}</td>
                     <td className="text-right text-[12.5px] font-semibold tabular-nums" style={{ color: e.margin < 0 ? "var(--color-danger)" : "var(--color-coffee)" }}>{e.margin < 0 ? "−" : ""}{compactINR(Math.abs(e.margin))}</td>

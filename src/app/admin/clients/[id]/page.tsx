@@ -59,13 +59,13 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
   const ct = clientTools.find((t) => t.client.id === c.id);
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto max-w-[1400px]">
       <button onClick={() => router.push("/admin/clients")} className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-coffee">
         <ChevronLeft className="size-4" /> Control Plane
       </button>
 
       {/* ===== header ===== */}
-      <div className="rounded-3xl border border-foam bg-porcelain p-6 shadow-glass">
+      <div className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <span className="grid size-14 shrink-0 place-items-center rounded-2xl font-serif text-2xl font-semibold text-porcelain shadow-glass"
@@ -126,7 +126,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
               <span className="grid size-8 place-items-center rounded-xl" style={{ background: `color-mix(in srgb, ${k.tint} 16%, #fffdf9)`, color: `color-mix(in srgb, ${k.tint} 78%, #2a1a0f)` }}><k.icon className="size-4" /></span>
               <span className={monoLabel}>{k.label}</span>
             </div>
-            <div className="mt-2.5 font-serif text-[22px] font-semibold leading-none text-coffee tabular-nums">{k.v}</div>
+            <div className="mt-2.5 font-serif text-[24px] font-semibold leading-none text-coffee tabular-nums">{k.v}</div>
             <div className="mt-1.5 text-[11px] text-muted-foreground">{k.sub}</div>
           </div>
         ))}
@@ -230,7 +230,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
           <div className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <h2 className="font-serif text-lg font-semibold text-coffee">Wallet &amp; actions</h2>
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="font-serif text-[28px] font-semibold tabular-nums" style={{ color: c.walletBalance < 0 ? "var(--color-danger)" : "var(--color-coffee)" }}>{c.walletBalance < 0 ? "−" : ""}₹{Math.abs(c.walletBalance).toLocaleString("en-IN")}</span>
+              <span className="font-serif text-[30px] font-semibold tabular-nums" style={{ color: c.walletBalance < 0 ? "var(--color-danger)" : "var(--color-coffee)" }}>{c.walletBalance < 0 ? "−" : ""}₹{Math.abs(c.walletBalance).toLocaleString("en-IN")}</span>
               <span className={`${mono} text-[11px] uppercase tracking-wide text-latte`}>{runway ? `≈ ${runway.toLocaleString("en-IN")} min` : "no usage"}</span>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -252,12 +252,12 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px] border-collapse text-left">
                 <thead><tr className={`${mono} border-b border-foam text-[9.5px] uppercase tracking-[0.12em] text-latte`}>
-                  <th className="py-2 font-medium">Campaign</th><th className="font-medium">Status</th><th className="text-right font-medium">Leads</th><th className="text-right font-medium">Connect</th><th className="text-right font-medium">Conversions</th>
+                  <th className="py-2.5 font-medium">Campaign</th><th className="font-medium">Status</th><th className="text-right font-medium">Leads</th><th className="text-right font-medium">Connect</th><th className="text-right font-medium">Conversions</th>
                 </tr></thead>
                 <tbody>
                   {camps.map((cm: PlatCampaign) => (
                     <tr key={cm.id} className="border-b border-foam/60 last:border-0">
-                      <td className="py-2.5"><div className="flex items-center gap-2"><Megaphone className="size-3.5 text-caramel" /><span className="text-[13px] font-medium text-coffee">{cm.name}</span></div></td>
+                      <td className="py-3"><div className="flex items-center gap-2"><Megaphone className="size-3.5 text-caramel" /><span className="text-[13px] font-medium text-coffee">{cm.name}</span></div></td>
                       <td><Tag c={CAMP_TONE[cm.status]}>{cm.status[0].toUpperCase() + cm.status.slice(1)}</Tag></td>
                       <td className="text-right text-[12.5px] text-mocha tabular-nums">{cm.leads.toLocaleString("en-IN")}</td>
                       <td className="text-right text-[12.5px] text-mocha tabular-nums">{cm.connectPct}%</td>

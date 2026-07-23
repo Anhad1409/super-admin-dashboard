@@ -108,7 +108,7 @@ export default function RevenuePage() {
           <MrrChart />
         </Card>
         <Card title="Revenue by plan">
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {planMix.filter((p) => p.mrr > 0).sort((a, b) => b.mrr - a.mrr).map((p) => {
               const pct = Math.round((p.mrr / revenue.mrr) * 100);
               return (

@@ -40,7 +40,7 @@ export default function SupportPage() {
     }));
 
   return (
-    <div className="mx-auto max-w-[1300px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Support" subtitle="Every open ticket across the platform, prioritised by urgency." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

@@ -110,7 +110,7 @@ export default function AiOpsPage() {
                   const T = TREND_META[i.trend];
                   return (
                     <tr key={i.client.id} onClick={() => router.push(`/admin/clients/${i.client.id}`)} className="cursor-pointer border-b border-foam/60 last:border-0 hover:bg-oat/30">
-                      <td className="py-2.5 text-[13px] font-medium text-coffee">{i.client.name}</td>
+                      <td className="py-3 text-[13px] font-medium text-coffee">{i.client.name}</td>
                       <td className="text-right text-[12.5px] font-semibold tabular-nums" style={{ color: i.containment < 88 ? "var(--color-danger)" : i.containment < 93 ? "var(--color-warning)" : "var(--color-success)" }}>{i.containment}%</td>
                       <td className="text-right text-[12.5px] text-mocha tabular-nums">{i.handoffPer100}</td>
                       <td className="text-right text-[12.5px] text-mocha tabular-nums">{i.bargePer1k}</td>

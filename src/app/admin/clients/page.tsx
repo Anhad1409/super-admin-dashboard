@@ -155,7 +155,7 @@ export default function ControlPlanePage() {
 
       {/* ===== NORTH STAR ===== */}
       <div className="mt-5 flex items-center gap-2.5">
-        <span className={`${monoLabel} text-[10.5px]`}>North star</span>
+        <span className={`${monoLabel}`}>North star</span>
         <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
         <span className={`${mono} text-[10px] uppercase tracking-wide text-latte`}>tap any metric to drill in</span>
       </div>
@@ -168,7 +168,7 @@ export default function ControlPlanePage() {
 
       {/* ===== REVENUE QUALITY ===== */}
       <div className="mt-6 flex items-center gap-2.5">
-        <span className={`${monoLabel} text-[10.5px]`}>Revenue quality</span>
+        <span className={`${monoLabel}`}>Revenue quality</span>
         <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
       </div>
       <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -180,7 +180,7 @@ export default function ControlPlanePage() {
 
       {/* ===== ACTIVATION & ENGAGEMENT + OUTCOME ===== */}
       <div className="mt-6 flex items-center gap-2.5">
-        <span className={`${monoLabel} text-[10.5px]`}>Engagement &amp; outcome</span>
+        <span className={`${monoLabel}`}>Engagement &amp; outcome</span>
         <span className="h-px flex-1 bg-gradient-to-r from-caramel/40 to-transparent" />
       </div>
       <div className="mt-2.5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -201,7 +201,7 @@ export default function ControlPlanePage() {
         </div>
         <div className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
           <h2 className="font-serif text-lg font-semibold text-coffee">Plan mix</h2>
-          <div className="mt-3 space-y-2.5">
+          <div className="mt-3 space-y-3">
             {planMix.filter((p) => p.count > 0).map((p) => {
               const pct = Math.round((p.mrr / platform.mrr) * 100);
               return (
@@ -337,8 +337,8 @@ function ClientRow({ c, onOpen }: { c: Client; onOpen: () => void }) {
           </span>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="truncate text-[13.5px] font-semibold text-coffee">{c.name}</span>
-              {c.internal && <span className={`${mono} rounded bg-oat/80 px-1 py-0.5 text-[8.5px] uppercase tracking-wide text-mocha`}>internal</span>}
+              <span className="truncate text-[13px] font-semibold text-coffee">{c.name}</span>
+              {c.internal && <span className={`${mono} rounded bg-oat/80 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-mocha`}>internal</span>}
             </div>
             <div className="truncate text-[11px] text-muted-foreground">{c.vertical}</div>
           </div>

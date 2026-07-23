@@ -62,7 +62,7 @@ export default function BenchmarksPage() {
   });
 
   return (
-    <div className="mx-auto max-w-[1300px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Benchmarks" subtitle="Every client ranked against the platform — percentiles reveal who's an outlier, up or down." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -90,7 +90,7 @@ export default function BenchmarksPage() {
             <tbody>
               {rows.map((r: BenchRow) => (
                 <tr key={r.client.id} onClick={() => router.push(`/admin/clients/${r.client.id}`)} className="cursor-pointer border-b border-foam/60 last:border-0 hover:bg-oat/30">
-                  <td className="py-2.5 text-[13px] font-medium text-coffee">{r.client.name}</td>
+                  <td className="py-3 text-[13px] font-medium text-coffee">{r.client.name}</td>
                   {METRICS.map((m) => {
                     const p = r[m.key];
                     return (

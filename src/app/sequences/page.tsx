@@ -150,7 +150,7 @@ export default function SequencesPage() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                   <h3 className="font-serif text-lg font-semibold text-coffee">{s.name}</h3>
-                  <span className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize", statusTone[s.status])}>
+                  <span className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium capitalize", statusTone[s.status])}>
                     {s.status === "active" && <Equalizer className="h-3" />}
                     {s.status}
                   </span>
@@ -260,7 +260,7 @@ export default function SequencesPage() {
                             <button key={c}
                               onClick={() => setSteps((prev) => prev.map((p) => (p.uid === st.uid ? { ...p, channel: c } : p)))}
                               className={cn(
-                                "flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                                "flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
                                 active
                                   ? "border-caramel bg-brand text-brand-foreground shadow-cta"
                                   : "border-foam bg-porcelain text-mocha hover:border-latte hover:text-coffee",

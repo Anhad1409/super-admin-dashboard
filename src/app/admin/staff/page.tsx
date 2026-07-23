@@ -33,7 +33,7 @@ export default function StaffPage() {
     })));
 
   return (
-    <div className="mx-auto max-w-[1200px] space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-5">
       <CpHeader title="Staff" subtitle="Blostem team accounts with access to the control plane — roles, 2FA and activity."
         right={<button onClick={() => toast({ title: "Invite staff", body: "Open the staff invite flow.", severity: "info" })} className="inline-flex items-center gap-1.5 rounded-full bg-caramel/20 px-3.5 py-2 text-xs font-semibold text-caramel hover:bg-caramel/30"><Plus className="size-3.5" /> Invite staff</button>} />
 
