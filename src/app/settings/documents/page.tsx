@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/notifications/toaster";
 import { cn } from "@/lib/utils";
 import { GlazedTile, ACCENT } from "@/components/settings/glaze";
+import { monoLabel } from "@/components/v7/kit";
 
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 
 type Doc = { name: string; file: string; type: string; size: string; date: string; extracted: boolean; hidden: boolean };
 const SEED: Doc[] = [

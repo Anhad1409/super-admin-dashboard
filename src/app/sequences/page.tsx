@@ -13,9 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Chip, EASE, Equalizer } from "@/components/v7/kit";
 import { toast } from "@/components/notifications/toaster";
 import { cn } from "@/lib/utils";
+import { monoLabel } from "@/components/v7/kit";
 
 const mono = "font-[family-name:var(--font-data)]";
-const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
 
 type Channel = "call" | "sms" | "whatsapp" | "email";
 type Status = "draft" | "active" | "paused" | "completed";

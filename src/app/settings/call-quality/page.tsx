@@ -8,8 +8,8 @@ import { ChevronLeft, SlidersHorizontal, Lock, Plus, Clock, Volume2, Thermometer
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/notifications/toaster";
 import { GlazedTile, ACCENT } from "@/components/settings/glaze";
+import { monoLabel } from "@/components/v7/kit";
 
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 
 type Preset = { name: string; desc: string; duration: string; silence: string; speed: string; stability: number; temp: number; tokens: number; interrupts: boolean; backchannel: boolean; system?: boolean };
 const PRESETS: Preset[] = [

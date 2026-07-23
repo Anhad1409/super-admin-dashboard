@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/notifications/toaster";
 import { cn } from "@/lib/utils";
 import { GlazedTile, ACCENT } from "@/components/settings/glaze";
+import { monoLabel } from "@/components/v7/kit";
 
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 
 type Skill = { name: string; cat: string; builtin: boolean; on: boolean; dynamic?: boolean };
 const SEED: Skill[] = [

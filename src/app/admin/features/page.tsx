@@ -12,8 +12,8 @@ import { SectionCard } from "@/components/v7/kit";
 import { toast } from "@/components/notifications/toaster";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { monoLabel } from "@/components/admin/cp";
 
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 
 const ORGS = [
   "Blostem Demo Organization",
@@ -84,7 +84,7 @@ export default function FeatureManagementPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-[1400px]">
       <nav className="mb-3 flex items-center gap-1.5 text-sm text-muted-foreground">
         <Link href="/admin" className="inline-flex items-center gap-1 hover:text-coffee">
           <ChevronLeft className="size-4" /> Admin

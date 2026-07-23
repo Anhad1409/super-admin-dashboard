@@ -231,7 +231,7 @@ export function V7Calls() {
                           <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.1fr]">
                             <div className="space-y-4">
                               <div className="rounded-xl border border-foam bg-porcelain p-4 shadow-glass">
-                                <div className={cn(monoLabel, "text-[10.5px]")}>Technical details (for support)</div>
+                                <div className={monoLabel}>Technical details (for support)</div>
                                 <p className="mt-1 text-[11px] text-muted-foreground">Reference codes and diagnostics — handy if you contact support. You don&apos;t need these day to day.</p>
                                 <div className="mt-2.5">
                                   <TechRow k="Call status" v={<span className={cn("rounded-full border px-2 py-0.5 text-[11px] font-medium", (c.status || "completed") === "completed" ? "border-success/25 bg-success/12 text-success" : bucketMeta[b].badge)}>{titleCase(c.status || "completed")}</span>} code={c.status || "completed"} hint="Whether the call connected and how it ended." />
@@ -243,7 +243,7 @@ export function V7Calls() {
                                 </div>
                               </div>
                               <div className="rounded-xl border border-foam bg-porcelain p-4 shadow-glass">
-                                <div className={cn(monoLabel, "text-[10.5px]")}>Score</div>
+                                <div className={monoLabel}>Score</div>
                                 <p className="mt-1.5 text-sm text-coffee/90">
                                   Score <b className="tabular-nums">{b === "failed" ? pre : after}</b>{b === "failed"
                                     ? " — from the upload, not yet validated by a conversation."
@@ -255,7 +255,7 @@ export function V7Calls() {
 
                             <div className="space-y-4">
                               <div className="rounded-xl border border-foam bg-porcelain p-4 shadow-glass">
-                                <div className={cn(monoLabel, "text-[10.5px]")}>Conversation ({userTurns} customer turns)</div>
+                                <div className={monoLabel}>Conversation ({userTurns} customer turns)</div>
                                 <div className="mt-2.5 max-h-56 space-y-1.5 overflow-y-auto pr-1">
                                   {turns.map((t2, k) => (
                                     <div key={k} className={cn("max-w-[88%]", t2.who === "user" && "ml-auto")}>
@@ -268,7 +268,7 @@ export function V7Calls() {
                                 </div>
                               </div>
                               <div className="rounded-xl border border-foam bg-porcelain p-3.5 shadow-glass">
-                                <div className={cn(monoLabel, "mb-2 text-[10.5px]")}>Recording</div>
+                                <div className={cn(monoLabel, "mb-2")}>Recording</div>
                                 <div className="flex items-center gap-2.5">
                                   <button onClick={(e) => { e.stopPropagation(); setPlaying(isPlaying ? null : c.id); }} aria-label={isPlaying ? "Pause recording" : "Play recording"}
                                     className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-cta transition-colors hover:bg-brand-dark">

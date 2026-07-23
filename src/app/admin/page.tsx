@@ -5,12 +5,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Shield, Check, Building2, Users, Megaphone, ShieldCheck, ArrowRight, SlidersHorizontal, ShieldAlert } from "lucide-react";
+import { Check, Building2, Users, Megaphone, ShieldCheck, ArrowRight, SlidersHorizontal, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/notifications/toaster";
 import { cn } from "@/lib/utils";
+import { CpHeader, monoLabel } from "@/components/admin/cp";
 
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 
 const ORGS = [
   "Blostem Demo Organization",
@@ -39,15 +39,12 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl">
-      <h1 className="flex items-center gap-2.5 font-serif text-3xl font-semibold tracking-tight text-coffee">
-        <Shield className="size-6 text-caramel" /> Admin Console
-      </h1>
-      <p className="mt-1.5 text-sm text-muted-foreground">Platform-level management for Blostem staff only.</p>
+    <div className="mx-auto max-w-[1400px] space-y-5">
+      <CpHeader title="Admin Console" subtitle="Platform-level management for Blostem staff only — organisations, staff and features." />
 
       {/* ---- control plane banner ---- */}
       <Link href="/admin/clients"
-        className="group mt-5 flex items-center gap-4 overflow-hidden rounded-2xl border border-espresso/30 p-5 shadow-card-lg transition-transform hover:-translate-y-0.5"
+        className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-espresso/30 p-5 shadow-card-lg transition-transform hover:-translate-y-0.5"
         style={{ background: "linear-gradient(135deg, #2a1a0f 0%, #3d2817 60%, #4a2f18 100%)" }}>
         <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-caramel/40 bg-caramel/15 text-caramel"><ShieldAlert className="size-6" /></span>
         <div className="min-w-0 flex-1">
@@ -61,7 +58,7 @@ export default function AdminPage() {
       </Link>
 
       {/* ---- switch organization ---- */}
-      <section className="mt-5 rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
+      <section className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="font-serif text-lg font-semibold text-coffee">Switch Organization</h2>
           <p className="text-sm text-muted-foreground">
@@ -92,7 +89,7 @@ export default function AdminPage() {
       </section>
 
       {/* ---- platform KPIs ---- */}
-      <div className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {KPIS.map((k) => (
           <div key={k.label} className="rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
             <div className="flex items-center gap-2"><k.icon className="size-4 text-caramel" /><span className={monoLabel}>{k.label}</span></div>
@@ -103,7 +100,7 @@ export default function AdminPage() {
       </div>
 
       {/* ---- admin tooling ---- */}
-      <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="flex flex-col rounded-2xl border border-foam bg-porcelain p-5 shadow-glass">
           <div className="flex items-center gap-2">
             <Building2 className="size-4 text-caramel" />

@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import NumberFlow from "@number-flow/react";
 import {
   Building2, IndianRupee, PhoneCall, TrendingUp, AlertTriangle, Sparkles, Search,
-  ChevronRight, ShieldAlert, Clock3, Ticket, Wallet, Repeat, Rocket, Target,
+  ChevronRight, Clock3, Ticket, Wallet, Repeat, Rocket, Target,
   Layers, PieChart, Users, Gauge, Percent, Activity, BellRing, Bot,
 } from "lucide-react";
 import {
@@ -23,9 +23,9 @@ import { revenueQuality, engagement, adoption, margins, funnelStats, interventio
 import { MetricTile } from "@/components/admin/metric";
 import { DETAILS } from "@/lib/metric-details";
 import { cn } from "@/lib/utils";
+import { CpHeader, monoLabel } from "@/components/admin/cp";
 
 const mono = "font-[family-name:var(--font-data)]";
-const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
 const compactINR = (n: number) => n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : n >= 1e5 ? `₹${(n / 1e5).toFixed(1)} L` : `₹${n.toLocaleString("en-IN")}`;
 
 /* ---------- mini sparkline ---------- */
@@ -121,37 +121,18 @@ export default function ControlPlanePage() {
 
   return (
     <div className="mx-auto max-w-[1400px]">
-      {/* ===== control-plane header band ===== */}
-      <div className="relative overflow-hidden rounded-3xl border border-espresso/30 p-6 shadow-card-lg"
-        style={{ background: "linear-gradient(135deg, #2a1a0f 0%, #3d2817 55%, #4a2f18 100%)" }}>
-        <span aria-hidden className="pointer-events-none absolute -right-10 -top-16 size-64 rounded-full opacity-20 blur-3xl" style={{ background: "radial-gradient(circle, var(--color-caramel), transparent 70%)" }} />
-        <span aria-hidden className="pointer-events-none absolute -bottom-20 left-1/3 size-56 rounded-full opacity-15 blur-3xl" style={{ background: "radial-gradient(circle, var(--color-steam), transparent 70%)" }} />
-        <div className="relative flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <span className={`${mono} inline-flex items-center gap-1.5 rounded-full border border-caramel/40 bg-caramel/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-caramel`}>
-                <ShieldAlert className="size-3" /> Super Admin
-              </span>
-              <span className={`${mono} flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-latte`}>
-                <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-steam opacity-60" /><span className="relative inline-flex size-2 rounded-full bg-steam" /></span>
-                live
-              </span>
-            </div>
-            <h1 className="mt-2.5 font-serif text-[30px] font-semibold leading-tight text-cream">VoiceBrew Control Plane</h1>
-            <p className="mt-1 text-sm text-latte">Every client, one view — revenue, usage, health and compliance across the whole platform.</p>
+      <CpHeader title="VoiceBrew Control Plane"
+        subtitle="Every client, one view — revenue, usage, health and compliance across the whole platform."
+        right={<>
+          <div className="text-right">
+            <div className={`${mono} text-[10px] uppercase tracking-[0.14em] text-latte`}>Seat utilisation</div>
+            <div className="mt-1 font-serif text-2xl font-semibold text-cream tabular-nums">{platform.seatsUsed}<span className="text-latte">/{platform.seatsTotal}</span></div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <div className={`${mono} text-[10px] uppercase tracking-[0.14em] text-latte`}>Seat utilisation</div>
-              <div className="mt-1 font-serif text-2xl font-semibold text-cream tabular-nums">{platform.seatsUsed}<span className="text-latte">/{platform.seatsTotal}</span></div>
-            </div>
-            <div className="text-right">
-              <div className={`${mono} text-[10px] uppercase tracking-[0.14em] text-latte`}>Avg health</div>
-              <div className="mt-1 font-serif text-2xl font-semibold text-cream tabular-nums">{platform.avgHealth}</div>
-            </div>
+          <div className="text-right">
+            <div className={`${mono} text-[10px] uppercase tracking-[0.14em] text-latte`}>Avg health</div>
+            <div className="mt-1 font-serif text-2xl font-semibold text-cream tabular-nums">{platform.avgHealth}</div>
           </div>
-        </div>
-      </div>
+        </>} />
 
       {/* ===== NORTH STAR ===== */}
       <div className="mt-5 flex items-center gap-2.5">

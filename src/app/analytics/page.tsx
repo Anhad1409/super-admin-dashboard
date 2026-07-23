@@ -15,9 +15,9 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/notifications/toaster";
 import { cn } from "@/lib/utils";
 import { GlazedTile } from "@/components/settings/glaze";
+import { monoLabel } from "@/components/v7/kit";
 
 const SUBTABS = ["Overview", "Call Performance", "Providers", "Live", "Campaigns"];
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 
 const providers = [
   { name: "plivo", mode: "pipecat", total: 1240, completed: 760, answerRate: 61, avgDur: "1m 18s", avgCost: 6.2, quality: 72 },
@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
               </div>
               <div className="max-h-[420px] overflow-y-auto">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-oat/60 backdrop-blur"><tr className="text-left text-xs text-mocha"><th className="px-5 py-2">#</th><th className="px-4 py-2">Name</th><th className="px-4 py-2">Phone</th><th className="px-4 py-2">Campaign</th><th className="px-4 py-2 text-right">Last called</th><th className="px-4 py-2 text-right">Calls</th><th className="px-4 py-2 text-right">Score</th></tr></thead>
+                  <thead className="sticky top-0 bg-oat/60 backdrop-blur"><tr className="text-left font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha"><th className="px-5 py-2">#</th><th className="px-4 py-2">Name</th><th className="px-4 py-2">Phone</th><th className="px-4 py-2">Campaign</th><th className="px-4 py-2 text-right">Last called</th><th className="px-4 py-2 text-right">Calls</th><th className="px-4 py-2 text-right">Score</th></tr></thead>
                   <tbody className="divide-y divide-foam/70">
                     {hotRoster.map((r, i2) => (
                       <tr key={i2} className="hover:bg-oat/30">
@@ -544,7 +544,7 @@ export default function AnalyticsPage() {
           <section className="overflow-hidden rounded-3xl border border-foam bg-porcelain shadow-glass">
             <div className="px-6 py-4 text-sm font-semibold uppercase tracking-wider text-mocha">Provider details</div>
             <table className="w-full text-sm">
-              <thead><tr className="border-y border-foam bg-oat/40 text-left text-xs text-mocha"><th className="px-6 py-2">Provider</th><th className="px-4 py-2">Mode</th><th className="px-4 py-2 text-right">Total</th><th className="px-4 py-2 text-right">Completed</th><th className="px-4 py-2 text-right">Answer rate</th><th className="px-4 py-2 text-right">Avg dur</th><th className="px-4 py-2 text-right">Avg cost</th><th className="px-4 py-2 text-right">Quality</th></tr></thead>
+              <thead><tr className="border-y border-foam bg-oat/40 text-left font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha"><th className="px-6 py-2">Provider</th><th className="px-4 py-2">Mode</th><th className="px-4 py-2 text-right">Total</th><th className="px-4 py-2 text-right">Completed</th><th className="px-4 py-2 text-right">Answer rate</th><th className="px-4 py-2 text-right">Avg dur</th><th className="px-4 py-2 text-right">Avg cost</th><th className="px-4 py-2 text-right">Quality</th></tr></thead>
               <tbody className="divide-y divide-foam">
                 {providers.map((p) => (
                   <tr key={p.name}>
@@ -574,7 +574,7 @@ export default function AnalyticsPage() {
       {tab === "Campaigns" && (
         <section className="overflow-hidden rounded-3xl border border-foam bg-porcelain shadow-glass">
           <table className="w-full text-sm">
-            <thead><tr className="border-b border-foam bg-oat/40 text-left text-xs text-mocha"><th className="px-6 py-2">Campaign</th><th className="px-4 py-2">Status</th><th className="px-4 py-2 text-right">Leads</th><th className="px-4 py-2 text-right">Called</th><th className="px-4 py-2 text-right">Converted</th><th className="px-4 py-2 text-right">Conv. %</th></tr></thead>
+            <thead><tr className="border-b border-foam bg-oat/40 text-left font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha"><th className="px-6 py-2">Campaign</th><th className="px-4 py-2">Status</th><th className="px-4 py-2 text-right">Leads</th><th className="px-4 py-2 text-right">Called</th><th className="px-4 py-2 text-right">Converted</th><th className="px-4 py-2 text-right">Conv. %</th></tr></thead>
             <tbody className="divide-y divide-foam">
               {worldCampaigns.map((c) => (
                 <tr key={c.id}>

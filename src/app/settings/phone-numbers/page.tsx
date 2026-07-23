@@ -32,7 +32,7 @@ export default function PhoneNumbersPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-7xl">
       <Link href="/settings" className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-coffee"><ChevronLeft className="size-4" /> Back to Settings</Link>
 
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">

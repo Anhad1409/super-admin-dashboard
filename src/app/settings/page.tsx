@@ -219,7 +219,7 @@ export default function SettingsPage() {
         {tab === "Organization" && (
           <div className="space-y-5">
             <div>
-              <h2 className="text-lg font-semibold text-coffee">Organization Profile</h2>
+              <h2 className="font-serif text-lg font-semibold text-coffee">Organization Profile</h2>
               <p className="text-sm text-muted-foreground">Manage your organization details and industry context.</p>
             </div>
             <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-foam text-center text-sm font-medium">
@@ -280,7 +280,7 @@ export default function SettingsPage() {
         {tab === "Team" && (
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <div><h2 className="text-lg font-semibold text-coffee">Team Members</h2><p className="text-sm text-muted-foreground">Manage users in your organization</p></div>
+              <div><h2 className="font-serif text-lg font-semibold text-coffee">Team Members</h2><p className="text-sm text-muted-foreground">Manage users in your organization</p></div>
               <Button size="sm" onClick={() => setInviteOpen(true)} className="gap-1.5 bg-brand text-brand-foreground hover:bg-brand-dark"><Plus className="size-4" /> Invite User</Button>
             </div>
             <div className="mb-4">
@@ -340,7 +340,7 @@ export default function SettingsPage() {
         {tab === "Providers" && (
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <div><h2 className="text-lg font-semibold text-coffee">Provider Management</h2><p className="text-sm text-muted-foreground">Bring your own telephony &amp; AI providers — no lock-in.</p></div>
+              <div><h2 className="font-serif text-lg font-semibold text-coffee">Provider Management</h2><p className="text-sm text-muted-foreground">Bring your own telephony &amp; AI providers — no lock-in.</p></div>
               <Button size="sm" onClick={() => toast({ title: "Add provider", body: `Connect a ${provTab} provider…`, severity: "info" })} className="gap-1.5 bg-brand text-brand-foreground hover:bg-brand-dark"><Plus className="size-4" /> Add provider</Button>
             </div>
             <div className="mb-4 flex gap-1.5">
@@ -366,7 +366,7 @@ export default function SettingsPage() {
 
         {tab === "Compliance" && (
           <div className="space-y-3">
-            <h2 className="mb-1 text-lg font-semibold text-coffee">Compliance defaults</h2>
+            <h2 className="mb-1 font-serif text-lg font-semibold text-coffee">Compliance defaults</h2>
             {[["DNC / DND scrubbing", "Skip Do-Not-Call numbers on every dial"], ["Calling-window enforcement", "Only dial within TRAI/RBI permitted hours"], ["AI disclosure", "Require AI disclosure in the conversation"], ["Recording consent", "Require recording consent before proceeding"]].map(([t, d], i) => (
               <div key={t} className="flex items-center justify-between rounded-xl border border-foam bg-card p-4">
                 <div><div className="text-sm font-medium text-coffee">{t}</div><div className="text-xs text-muted-foreground">{d}</div></div>
@@ -388,7 +388,7 @@ export default function SettingsPage() {
 
         {tab === "API Keys" && (
           <div>
-            <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold text-coffee">API keys &amp; webhooks</h2><Button size="sm" onClick={() => toast({ title: "Key generated", body: "New API key created — copy it now.", severity: "success" })} className="gap-1.5 bg-brand text-brand-foreground hover:bg-brand-dark"><Plus className="size-4" /> Generate key</Button></div>
+            <div className="mb-4 flex items-center justify-between"><h2 className="font-serif text-lg font-semibold text-coffee">API keys &amp; webhooks</h2><Button size="sm" onClick={() => toast({ title: "Key generated", body: "New API key created — copy it now.", severity: "success" })} className="gap-1.5 bg-brand text-brand-foreground hover:bg-brand-dark"><Plus className="size-4" /> Generate key</Button></div>
             <div className="mb-3 rounded-xl border border-foam bg-oat/30 p-3">
               <div className="text-xs font-semibold uppercase tracking-wider text-mocha">Funnel Webhook URL</div>
               <div className="mt-1.5 flex items-center gap-2">

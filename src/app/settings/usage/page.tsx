@@ -10,8 +10,8 @@ import { timeSeries } from "@/lib/data";
 import { formatINR } from "@/lib/format";
 import { toast } from "@/components/notifications/toaster";
 import { GlazedTile, ACCENT } from "@/components/settings/glaze";
+import { monoLabel } from "@/components/v7/kit";
 
-const monoLabel = "font-[family-name:var(--font-data)] text-[10px] uppercase tracking-[0.14em] text-mocha";
 const PERIODS = ["2026-07", "2026-06", "2026-05"];
 
 export default function UsagePage() {
@@ -40,7 +40,7 @@ export default function UsagePage() {
   const maxBar = Math.max(...bars.map((b) => b.v), 1);
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-7xl">
       <Link href="/settings" className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-coffee"><ChevronLeft className="size-4" /> Back to Settings</Link>
 
       <h1 className="flex items-center gap-3 font-serif text-3xl font-semibold tracking-tight text-coffee"><GlazedTile icon={BarChart3} tint={ACCENT.money} size="lg" /> Usage &amp; Metering</h1>

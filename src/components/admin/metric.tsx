@@ -13,7 +13,7 @@ import { X, ArrowRight, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const mono = "font-[family-name:var(--font-data)]";
-const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
+export const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
 
 export type BreakdownRow = { name: string; value: string; pct?: number; tint?: string; href?: string; sub?: string; flag?: boolean };
 export type Breakdown = { label: string; rows: BreakdownRow[]; note?: string };
@@ -64,7 +64,7 @@ function MetricDrawer({ detail, onClose }: { detail: MetricDetail | null; onClos
   }, [detail, onClose]);
 
   return (
-    <div className={cn("fixed inset-0 z-[120]", detail ? "" : "pointer-events-none")}>
+    <div className={cn("fixed inset-0 z-[120] overflow-hidden", detail ? "" : "pointer-events-none")}>
       {/* scrim */}
       <div onClick={onClose} className={cn("absolute inset-0 bg-espresso/35 backdrop-blur-[2px] transition-opacity duration-200", detail ? "opacity-100" : "opacity-0")} />
       {/* panel */}

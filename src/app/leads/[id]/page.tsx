@@ -38,7 +38,7 @@ export default function LeadDetailPage() {
   );
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-7xl">
       <button onClick={() => router.push("/leads")} className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-coffee"><ChevronLeft className="size-4" /> Leads</button>
 
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">

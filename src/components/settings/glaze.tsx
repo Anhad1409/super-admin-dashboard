@@ -57,7 +57,7 @@ export function SectionRule({ children, tint = ACCENT.core, className }: { child
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
       <BeanDot color={tint} className="size-3" />
-      <h2 className="shrink-0 font-[family-name:var(--font-data)] text-[10.5px] font-semibold uppercase tracking-[0.16em]"
+      <h2 className="shrink-0 font-[family-name:var(--font-data)] text-[10px] font-semibold uppercase tracking-[0.14em]"
         style={{ color: `color-mix(in srgb, ${tint} 55%, var(--color-espresso))` }}>{children}</h2>
       <span aria-hidden className="h-px flex-1"
         style={{ background: `linear-gradient(90deg, color-mix(in srgb, ${tint} 42%, transparent), transparent 85%)` }} />

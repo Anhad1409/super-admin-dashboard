@@ -18,9 +18,9 @@ import {
   clientById, churnRiskOf, PLAN_META, STATUS_META,
 } from "@/lib/clients-mock";
 import { campaignsFor, activityFor, interventionFor, clientTools, type PlatCampaign } from "@/lib/admin-analytics";
+import { monoLabel } from "@/components/admin/cp";
 
 const mono = "font-[family-name:var(--font-data)]";
-const monoLabel = `${mono} text-[10px] uppercase tracking-[0.14em] text-mocha`;
 const fmtDate = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 const RISK_META = { low: { label: "Low risk", c: "var(--color-success)" }, medium: { label: "Medium risk", c: "var(--color-warning)" }, high: { label: "High risk", c: "var(--color-danger)" } };
 
@@ -72,7 +72,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
               style={{ background: `linear-gradient(135deg, color-mix(in srgb, ${plan.tint} 55%, #c9a87c), ${plan.tint})` }}>{c.name[0]}</span>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-serif text-[26px] font-semibold leading-tight text-coffee">{c.name}</h1>
+                <h1 className="font-serif text-[28px] font-semibold leading-tight text-coffee">{c.name}</h1>
                 {c.internal && <span className={`${mono} rounded bg-oat/80 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-mocha`}>internal</span>}
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground">
